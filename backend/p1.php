@@ -7,19 +7,30 @@ $contact_user = getenv('CONTACT_DB_USER') ?: getenv('DB_USER') ?: "root";
 $contact_pass = getenv('CONTACT_DB_PASSWORD') ?: getenv('DB_PASSWORD') ?: "";
 $contact_name = getenv('CONTACT_DB_NAME') ?: getenv('DB_NAME') ?: "user1";
 
+// Parse port if specified in DB_PORT, CONTACT_DB_PORT or host string
+$contact_port = 3306;
+if (getenv('CONTACT_DB_PORT')) {
+    $contact_port = (int)getenv('CONTACT_DB_PORT');
+} elseif (getenv('DB_PORT')) {
+    $contact_port = (int)getenv('DB_PORT');
+} elseif (strpos($contact_host, ':') !== false) {
+    list($contact_host, $port_str) = explode(':', $contact_host, 2);
+    $contact_port = (int)$port_str;
+}
+
 // Disable strict exception throwing to handle connection errors programmatically
 mysqli_report(MYSQLI_REPORT_OFF);
 
 // Connect to Contact database
-$cn = @mysqli_connect($contact_host, $contact_user, $contact_pass, $contact_name);
+$cn = @mysqli_connect($contact_host, $contact_user, $contact_pass, $contact_name, $contact_port);
 
 // Try auto-creating database if it's missing (error 1049)
 if (!$cn && mysqli_connect_errno() == 1049) {
-    $conn_init = @mysqli_connect($contact_host, $contact_user, $contact_pass);
+    $conn_init = @mysqli_connect($contact_host, $contact_user, $contact_pass, null, $contact_port);
     if ($conn_init) {
         @mysqli_query($conn_init, "CREATE DATABASE IF NOT EXISTS `" . mysqli_real_escape_string($conn_init, $contact_name) . "`");
         mysqli_close($conn_init);
-        $cn = @mysqli_connect($contact_host, $contact_user, $contact_pass, $contact_name);
+        $cn = @mysqli_connect($contact_host, $contact_user, $contact_pass, $contact_name, $contact_port);
     }
 }
 

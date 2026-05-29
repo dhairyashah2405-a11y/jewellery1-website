@@ -7,19 +7,28 @@ $username = getenv('DB_USER') ?: "root";      // Default for WAMP/XAMPP
 $password = getenv('DB_PASSWORD') ?: "";          // Default is empty
 $dbname   = getenv('DB_NAME') ?: "user";      // The name of your database
 
+// Parse port if specified in DB_PORT or host string
+$port = 3306;
+if (getenv('DB_PORT')) {
+    $port = (int)getenv('DB_PORT');
+} elseif (strpos($host, ':') !== false) {
+    list($host, $port_str) = explode(':', $host, 2);
+    $port = (int)$port_str;
+}
+
 // Disable strict exception throwing to handle connection errors programmatically
 mysqli_report(MYSQLI_REPORT_OFF);
 
 // 2. Open the bridge/connection
-$conn = @mysqli_connect($host, $username, $password, $dbname);
+$conn = @mysqli_connect($host, $username, $password, $dbname, $port);
 
 // Try auto-creating database if it's missing (error 1049)
 if (!$conn && mysqli_connect_errno() == 1049) {
-    $conn_init = @mysqli_connect($host, $username, $password);
+    $conn_init = @mysqli_connect($host, $username, $password, null, $port);
     if ($conn_init) {
         @mysqli_query($conn_init, "CREATE DATABASE IF NOT EXISTS `" . mysqli_real_escape_string($conn_init, $dbname) . "`");
         mysqli_close($conn_init);
-        $conn = @mysqli_connect($host, $username, $password, $dbname);
+        $conn = @mysqli_connect($host, $username, $password, $dbname, $port);
     }
 }
 

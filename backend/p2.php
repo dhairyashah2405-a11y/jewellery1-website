@@ -12,32 +12,53 @@ $orders_user   = getenv('ORDERS_DB_USER') ?: getenv('DB_USER') ?: "root";
 $orders_pass   = getenv('ORDERS_DB_PASSWORD') ?: getenv('DB_PASSWORD') ?: "";
 $orders_name   = getenv('ORDERS_DB_NAME') ?: getenv('DB_NAME') ?: "orders";
 
+// Parse ports if specified in DB_PORT/CART_DB_PORT/ORDERS_DB_PORT or host strings
+$cart_port = 3306;
+if (getenv('CART_DB_PORT')) {
+    $cart_port = (int)getenv('CART_DB_PORT');
+} elseif (getenv('DB_PORT')) {
+    $cart_port = (int)getenv('DB_PORT');
+} elseif (strpos($cart_host, ':') !== false) {
+    list($cart_host, $port_str) = explode(':', $cart_host, 2);
+    $cart_port = (int)$port_str;
+}
+
+$orders_port = 3306;
+if (getenv('ORDERS_DB_PORT')) {
+    $orders_port = (int)getenv('ORDERS_DB_PORT');
+} elseif (getenv('DB_PORT')) {
+    $orders_port = (int)getenv('DB_PORT');
+} elseif (strpos($orders_host, ':') !== false) {
+    list($orders_host, $port_str) = explode(':', $orders_host, 2);
+    $orders_port = (int)$port_str;
+}
+
 // Disable strict exception throwing to handle connection errors programmatically
 mysqli_report(MYSQLI_REPORT_OFF);
 
 // Connect to Cart database
-$con = @mysqli_connect($cart_host, $cart_user, $cart_pass, $cart_name);
+$con = @mysqli_connect($cart_host, $cart_user, $cart_pass, $cart_name, $cart_port);
 
 // Try auto-creating Cart database if it's missing (error 1049)
 if (!$con && mysqli_connect_errno() == 1049) {
-    $conn_init = @mysqli_connect($cart_host, $cart_user, $cart_pass);
+    $conn_init = @mysqli_connect($cart_host, $cart_user, $cart_pass, null, $cart_port);
     if ($conn_init) {
         @mysqli_query($conn_init, "CREATE DATABASE IF NOT EXISTS `" . mysqli_real_escape_string($conn_init, $cart_name) . "`");
         mysqli_close($conn_init);
-        $con = @mysqli_connect($cart_host, $cart_user, $cart_pass, $cart_name);
+        $con = @mysqli_connect($cart_host, $cart_user, $cart_pass, $cart_name, $cart_port);
     }
 }
 
 // Connect to Orders database
-$con1 = @mysqli_connect($orders_host, $orders_user, $orders_pass, $orders_name);
+$con1 = @mysqli_connect($orders_host, $orders_user, $orders_pass, $orders_name, $orders_port);
 
 // Try auto-creating Orders database if it's missing (error 1049)
 if (!$con1 && mysqli_connect_errno() == 1049) {
-    $conn_init = @mysqli_connect($orders_host, $orders_user, $orders_pass);
+    $conn_init = @mysqli_connect($orders_host, $orders_user, $orders_pass, null, $orders_port);
     if ($conn_init) {
         @mysqli_query($conn_init, "CREATE DATABASE IF NOT EXISTS `" . mysqli_real_escape_string($conn_init, $orders_name) . "`");
         mysqli_close($conn_init);
-        $con1 = @mysqli_connect($orders_host, $orders_user, $orders_pass, $orders_name);
+        $con1 = @mysqli_connect($orders_host, $orders_user, $orders_pass, $orders_name, $orders_port);
     }
 }
 

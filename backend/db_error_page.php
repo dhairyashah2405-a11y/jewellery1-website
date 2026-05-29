@@ -13,7 +13,7 @@ if (file_exists($env_path)) {
             $name = trim($name);
             $value = trim($value);
             $value = trim($value, "\"'");
-            if (!getenv($name) && !isset($_ENV[$name]) && !isset($_SERVER[$name])) {
+            if (getenv($name) === false && !isset($_ENV[$name]) && !isset($_SERVER[$name])) {
                 putenv("{$name}={$value}");
                 $_ENV[$name] = $value;
                 $_SERVER[$name] = $value;

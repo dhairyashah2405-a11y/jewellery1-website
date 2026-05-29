@@ -1,16 +1,31 @@
 <?php
+include_once __DIR__ . '/db_error_page.php';
+
 // 1. Database details
 $host     = getenv('DB_HOST') ?: "localhost";
 $username = getenv('DB_USER') ?: "root";      // Default for WAMP/XAMPP
 $password = getenv('DB_PASSWORD') ?: "";          // Default is empty
 $dbname   = getenv('DB_NAME') ?: "user";      // The name of your database
 
-// 2. Open the bridge/connection
-$conn = mysqli_connect($host, $username, $password, $dbname);
+// Disable strict exception throwing to handle connection errors programmatically
+mysqli_report(MYSQLI_REPORT_OFF);
 
-// 3. If the bridge fails, show an error
+// 2. Open the bridge/connection
+$conn = @mysqli_connect($host, $username, $password, $dbname);
+
+// Try auto-creating database if it's missing (error 1049)
+if (!$conn && mysqli_connect_errno() == 1049) {
+    $conn_init = @mysqli_connect($host, $username, $password);
+    if ($conn_init) {
+        @mysqli_query($conn_init, "CREATE DATABASE IF NOT EXISTS `" . mysqli_real_escape_string($conn_init, $dbname) . "`");
+        mysqli_close($conn_init);
+        $conn = @mysqli_connect($host, $username, $password, $dbname);
+    }
+}
+
+// 3. If the bridge fails, show a premium error page
 if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
+    show_db_error_page("Users Database", mysqli_connect_error(), $host, $dbname);
 }
 
 // Automatically create the 'u3' table if it does not exist

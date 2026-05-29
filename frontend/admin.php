@@ -3,15 +3,27 @@ session_start();
 include_once __DIR__ . '/../backend/p2.php'; // Defines $con (cart DB) and $con1 (orders DB)
 include_once __DIR__ . '/../backend/db_connect.php'; // Defines $conn (users DB)
 
+include_once __DIR__ . '/../backend/db_error_page.php';
+
 // Contact Form Database Connection (user1 DB)
-$con_mysql = @mysqli_connect("localhost", "root", "");
+$contact_host = getenv('CONTACT_DB_HOST') ?: getenv('DB_HOST') ?: "localhost";
+$contact_user = getenv('CONTACT_DB_USER') ?: getenv('DB_USER') ?: "root";
+$contact_pass = getenv('CONTACT_DB_PASSWORD') ?: getenv('DB_PASSWORD') ?: "";
+$contact_name = getenv('CONTACT_DB_NAME') ?: "user1";
+
+// Disable strict exception throwing to handle connection errors programmatically
+mysqli_report(MYSQLI_REPORT_OFF);
+
+// Try auto-creating database if it's missing (error 1049) or on initialization
+$con_mysql = @mysqli_connect($contact_host, $contact_user, $contact_pass);
 if ($con_mysql) {
-    @mysqli_query($con_mysql, "CREATE DATABASE IF NOT EXISTS user1");
+    @mysqli_query($con_mysql, "CREATE DATABASE IF NOT EXISTS `" . mysqli_real_escape_string($con_mysql, $contact_name) . "`");
     mysqli_close($con_mysql);
 }
-$con_contact = mysqli_connect("localhost", "root", "", "user1");
+
+$con_contact = @mysqli_connect($contact_host, $contact_user, $contact_pass, $contact_name);
 if (!$con_contact) {
-    die("Contact DB Connection failed: " . mysqli_connect_error());
+    show_db_error_page("Contact Database (Admin)", mysqli_connect_error(), $contact_host, $contact_name);
 }
 
 // Auto-create contactid table if not exists and ensure message is TEXT type

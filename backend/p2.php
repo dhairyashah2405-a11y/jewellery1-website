@@ -2,22 +2,24 @@
 include_once __DIR__ . '/db_error_page.php';
 
 // Database connections
-$cart_host     = getenv('CART_DB_HOST') ?: getenv('DB_HOST') ?: "localhost";
-$cart_user     = getenv('CART_DB_USER') ?: getenv('DB_USER') ?: "root";
-$cart_pass     = getenv('CART_DB_PASSWORD') ?: getenv('DB_PASSWORD') ?: "";
-$cart_name     = getenv('CART_DB_NAME') ?: getenv('DB_NAME') ?: "addtocart";
+$cart_host     = getenv('CART_DB_HOST') ?: getenv('DB_HOST') ?: getenv('MYSQLHOST') ?: "localhost";
+$cart_user     = getenv('CART_DB_USER') ?: getenv('DB_USER') ?: getenv('MYSQLUSER') ?: "root";
+$cart_pass     = getenv('CART_DB_PASSWORD') ?: getenv('DB_PASSWORD') ?: getenv('MYSQLPASSWORD') ?: "";
+$cart_name     = getenv('CART_DB_NAME') ?: getenv('DB_NAME') ?: getenv('MYSQLDATABASE') ?: getenv('MYSQL_DATABASE') ?: "addtocart";
 
-$orders_host   = getenv('ORDERS_DB_HOST') ?: getenv('DB_HOST') ?: "localhost";
-$orders_user   = getenv('ORDERS_DB_USER') ?: getenv('DB_USER') ?: "root";
-$orders_pass   = getenv('ORDERS_DB_PASSWORD') ?: getenv('DB_PASSWORD') ?: "";
-$orders_name   = getenv('ORDERS_DB_NAME') ?: getenv('DB_NAME') ?: "orders";
+$orders_host   = getenv('ORDERS_DB_HOST') ?: getenv('DB_HOST') ?: getenv('MYSQLHOST') ?: "localhost";
+$orders_user   = getenv('ORDERS_DB_USER') ?: getenv('DB_USER') ?: getenv('MYSQLUSER') ?: "root";
+$orders_pass   = getenv('ORDERS_DB_PASSWORD') ?: getenv('DB_PASSWORD') ?: getenv('MYSQLPASSWORD') ?: "";
+$orders_name   = getenv('ORDERS_DB_NAME') ?: getenv('DB_NAME') ?: getenv('MYSQLDATABASE') ?: getenv('MYSQL_DATABASE') ?: "orders";
 
-// Parse ports if specified in DB_PORT/CART_DB_PORT/ORDERS_DB_PORT or host strings
+// Parse ports if specified in DB_PORT/CART_DB_PORT/ORDERS_DB_PORT/MYSQLPORT or host strings
 $cart_port = 3306;
 if (getenv('CART_DB_PORT')) {
     $cart_port = (int)getenv('CART_DB_PORT');
 } elseif (getenv('DB_PORT')) {
     $cart_port = (int)getenv('DB_PORT');
+} elseif (getenv('MYSQLPORT')) {
+    $cart_port = (int)getenv('MYSQLPORT');
 } elseif (strpos($cart_host, ':') !== false) {
     list($cart_host, $port_str) = explode(':', $cart_host, 2);
     $cart_port = (int)$port_str;
@@ -28,6 +30,8 @@ if (getenv('ORDERS_DB_PORT')) {
     $orders_port = (int)getenv('ORDERS_DB_PORT');
 } elseif (getenv('DB_PORT')) {
     $orders_port = (int)getenv('DB_PORT');
+} elseif (getenv('MYSQLPORT')) {
+    $orders_port = (int)getenv('MYSQLPORT');
 } elseif (strpos($orders_host, ':') !== false) {
     list($orders_host, $port_str) = explode(':', $orders_host, 2);
     $orders_port = (int)$port_str;

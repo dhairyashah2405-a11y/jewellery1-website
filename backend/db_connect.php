@@ -2,15 +2,17 @@
 include_once __DIR__ . '/db_error_page.php';
 
 // 1. Database details
-$host     = getenv('DB_HOST') ?: "localhost";
-$username = getenv('DB_USER') ?: "root";      // Default for WAMP/XAMPP
-$password = getenv('DB_PASSWORD') ?: "";          // Default is empty
-$dbname   = getenv('DB_NAME') ?: "user";      // The name of your database
+$host     = getenv('DB_HOST') ?: getenv('MYSQLHOST') ?: "localhost";
+$username = getenv('DB_USER') ?: getenv('MYSQLUSER') ?: "root";      // Default for WAMP/XAMPP
+$password = getenv('DB_PASSWORD') ?: getenv('MYSQLPASSWORD') ?: "";          // Default is empty
+$dbname   = getenv('DB_NAME') ?: getenv('MYSQLDATABASE') ?: getenv('MYSQL_DATABASE') ?: "user";      // The name of your database
 
-// Parse port if specified in DB_PORT or host string
+// Parse port if specified in DB_PORT, MYSQLPORT or host string
 $port = 3306;
 if (getenv('DB_PORT')) {
     $port = (int)getenv('DB_PORT');
+} elseif (getenv('MYSQLPORT')) {
+    $port = (int)getenv('MYSQLPORT');
 } elseif (strpos($host, ':') !== false) {
     list($host, $port_str) = explode(':', $host, 2);
     $port = (int)$port_str;

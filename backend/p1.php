@@ -2,17 +2,19 @@
 include_once __DIR__ . '/db_error_page.php';
 
 // Database Connection Details
-$contact_host = getenv('CONTACT_DB_HOST') ?: getenv('DB_HOST') ?: "localhost";
-$contact_user = getenv('CONTACT_DB_USER') ?: getenv('DB_USER') ?: "root";
-$contact_pass = getenv('CONTACT_DB_PASSWORD') ?: getenv('DB_PASSWORD') ?: "";
-$contact_name = getenv('CONTACT_DB_NAME') ?: getenv('DB_NAME') ?: "user1";
+$contact_host = getenv('CONTACT_DB_HOST') ?: getenv('DB_HOST') ?: getenv('MYSQLHOST') ?: "localhost";
+$contact_user = getenv('CONTACT_DB_USER') ?: getenv('DB_USER') ?: getenv('MYSQLUSER') ?: "root";
+$contact_pass = getenv('CONTACT_DB_PASSWORD') ?: getenv('DB_PASSWORD') ?: getenv('MYSQLPASSWORD') ?: "";
+$contact_name = getenv('CONTACT_DB_NAME') ?: getenv('DB_NAME') ?: getenv('MYSQLDATABASE') ?: getenv('MYSQL_DATABASE') ?: "user1";
 
-// Parse port if specified in DB_PORT, CONTACT_DB_PORT or host string
+// Parse port if specified in DB_PORT, CONTACT_DB_PORT, MYSQLPORT or host string
 $contact_port = 3306;
 if (getenv('CONTACT_DB_PORT')) {
     $contact_port = (int)getenv('CONTACT_DB_PORT');
 } elseif (getenv('DB_PORT')) {
     $contact_port = (int)getenv('DB_PORT');
+} elseif (getenv('MYSQLPORT')) {
+    $contact_port = (int)getenv('MYSQLPORT');
 } elseif (strpos($contact_host, ':') !== false) {
     list($contact_host, $port_str) = explode(':', $contact_host, 2);
     $contact_port = (int)$port_str;

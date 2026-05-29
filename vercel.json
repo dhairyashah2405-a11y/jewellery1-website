@@ -1,10 +1,238 @@
 {
+  "version": 2,
   "functions": {
-    "**/*.php": {
-      "runtime": "vercel-php@0.7.0"
+    "api/**/*.php": {
+      "runtime": "vercel-php@0.7.3"
     }
   },
   "routes": [
-    { "src": "/(.*)", "dest": "/$1" }
+    {
+      "src": "/images/(.*)",
+      "dest": "/frontend/images/$1"
+    },
+    {
+      "src": "/bracelet images/(.*)",
+      "dest": "/frontend/bracelet images/$1"
+    },
+    {
+      "src": "/earring images/(.*)",
+      "dest": "/frontend/earring images/$1"
+    },
+    {
+      "src": "/necklace images/(.*)",
+      "dest": "/frontend/necklace images/$1"
+    },
+    {
+      "src": "/ring images/(.*)",
+      "dest": "/frontend/ring images/$1"
+    },
+    {
+      "src": "/uploads/(.*)",
+      "dest": "/frontend/uploads/$1"
+    },
+    {
+      "src": "/insert_cart.php",
+      "dest": "/api/insert_cart.php"
+    },
+    {
+      "src": "/remove_cart.php",
+      "dest": "/api/remove_cart.php"
+    },
+    {
+      "src": "/sync_cart.php",
+      "dest": "/api/sync_cart.php"
+    },
+    {
+      "src": "/update_cart_quantity.php",
+      "dest": "/api/update_cart_quantity.php"
+    },
+    {
+      "src": "/register_process.php",
+      "dest": "/api/register_process.php"
+    },
+    {
+      "src": "/logout.php",
+      "dest": "/api/logout.php"
+    },
+    {
+      "src": "/p1.php",
+      "dest": "/api/p1.php"
+    },
+    {
+      "src": "/p3.php",
+      "dest": "/api/p3.php"
+    },
+    {
+      "src": "/p4.php",
+      "dest": "/api/p4.php"
+    },
+    {
+      "src": "/p5.php",
+      "dest": "/api/p5.php"
+    },
+    {
+      "src": "/about",
+      "dest": "/api/about.php"
+    },
+    {
+      "src": "/about.php",
+      "dest": "/api/about.php"
+    },
+    {
+      "src": "/add-to-cart",
+      "dest": "/api/add_to_cart.php"
+    },
+    {
+      "src": "/add to cart.php",
+      "dest": "/api/add_to_cart.php"
+    },
+    {
+      "src": "/admin",
+      "dest": "/api/admin.php"
+    },
+    {
+      "src": "/admin.php",
+      "dest": "/api/admin.php"
+    },
+    {
+      "src": "/blog",
+      "dest": "/api/blog.php"
+    },
+    {
+      "src": "/blog.php",
+      "dest": "/api/blog.php"
+    },
+    {
+      "src": "/blog1",
+      "dest": "/api/blog1.php"
+    },
+    {
+      "src": "/blog1.php",
+      "dest": "/api/blog1.php"
+    },
+    {
+      "src": "/blog2",
+      "dest": "/api/blog2.php"
+    },
+    {
+      "src": "/blog2.php",
+      "dest": "/api/blog2.php"
+    },
+    {
+      "src": "/blog3",
+      "dest": "/api/blog3.php"
+    },
+    {
+      "src": "/blog3.php",
+      "dest": "/api/blog3.php"
+    },
+    {
+      "src": "/checkout",
+      "dest": "/api/checkout.php"
+    },
+    {
+      "src": "/checkout.php",
+      "dest": "/api/checkout.php"
+    },
+    {
+      "src": "/contact",
+      "dest": "/api/contact.php"
+    },
+    {
+      "src": "/contact.php",
+      "dest": "/api/contact.php"
+    },
+    {
+      "src": "/display_order",
+      "dest": "/api/display_order.php"
+    },
+    {
+      "src": "/display_order.php",
+      "dest": "/api/display_order.php"
+    },
+    {
+      "src": "/featured",
+      "dest": "/api/featured.php"
+    },
+    {
+      "src": "/featured.php",
+      "dest": "/api/featured.php"
+    },
+    {
+      "src": "/home",
+      "dest": "/api/home.php"
+    },
+    {
+      "src": "/home.php",
+      "dest": "/api/home.php"
+    },
+    {
+      "src": "/login",
+      "dest": "/api/login.php"
+    },
+    {
+      "src": "/login.php",
+      "dest": "/api/login.php"
+    },
+    {
+      "src": "/product",
+      "dest": "/api/product.php"
+    },
+    {
+      "src": "/product.php",
+      "dest": "/api/product.php"
+    },
+    {
+      "src": "/product-detail",
+      "dest": "/api/product_detail.php"
+    },
+    {
+      "src": "/product detail.php",
+      "dest": "/api/product_detail.php"
+    },
+    {
+      "src": "/profile",
+      "dest": "/api/profile.php"
+    },
+    {
+      "src": "/profile.php",
+      "dest": "/api/profile.php"
+    },
+    {
+      "src": "/register",
+      "dest": "/api/register.php"
+    },
+    {
+      "src": "/register.php",
+      "dest": "/api/register.php"
+    },
+    {
+      "src": "/shop",
+      "dest": "/api/shop.php"
+    },
+    {
+      "src": "/shop.php",
+      "dest": "/api/shop.php"
+    },
+    {
+      "src": "/view_orders",
+      "dest": "/api/view_orders.php"
+    },
+    {
+      "src": "/view_orders..php",
+      "dest": "/api/view_orders.php"
+    },
+    {
+      "src": "/wishlist",
+      "dest": "/api/wishlist.php"
+    },
+    {
+      "src": "/wishlist.php",
+      "dest": "/api/wishlist.php"
+    },
+    {
+      "src": "/",
+      "dest": "/api/home.php"
+    }
   ]
 }

@@ -1,4 +1,27 @@
 <?php
+// Custom .env loader to load configuration from root directory if it exists
+$env_path = __DIR__ . '/../.env';
+if (file_exists($env_path)) {
+    $lines = file($env_path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($lines as $line) {
+        $line = trim($line);
+        if (strpos($line, '#') === 0 || empty($line)) {
+            continue;
+        }
+        if (strpos($line, '=') !== false) {
+            list($name, $value) = explode('=', $line, 2);
+            $name = trim($name);
+            $value = trim($value);
+            $value = trim($value, "\"'");
+            if (!getenv($name) && !isset($_ENV[$name]) && !isset($_SERVER[$name])) {
+                putenv("{$name}={$value}");
+                $_ENV[$name] = $value;
+                $_SERVER[$name] = $value;
+            }
+        }
+    }
+}
+
 if (!function_exists('show_db_error_page')) {
     function show_db_error_page($db_title, $error_msg, $host, $dbname) {
         // Set HTTP status code to 500 (Internal Server Error)

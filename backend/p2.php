@@ -5,12 +5,12 @@ include_once __DIR__ . '/db_error_page.php';
 $cart_host     = getenv('CART_DB_HOST') ?: getenv('DB_HOST') ?: "localhost";
 $cart_user     = getenv('CART_DB_USER') ?: getenv('DB_USER') ?: "root";
 $cart_pass     = getenv('CART_DB_PASSWORD') ?: getenv('DB_PASSWORD') ?: "";
-$cart_name     = getenv('CART_DB_NAME') ?: "addtocart";
+$cart_name     = getenv('CART_DB_NAME') ?: getenv('DB_NAME') ?: "addtocart";
 
 $orders_host   = getenv('ORDERS_DB_HOST') ?: getenv('DB_HOST') ?: "localhost";
 $orders_user   = getenv('ORDERS_DB_USER') ?: getenv('DB_USER') ?: "root";
 $orders_pass   = getenv('ORDERS_DB_PASSWORD') ?: getenv('DB_PASSWORD') ?: "";
-$orders_name   = getenv('ORDERS_DB_NAME') ?: "orders";
+$orders_name   = getenv('ORDERS_DB_NAME') ?: getenv('DB_NAME') ?: "orders";
 
 // Disable strict exception throwing to handle connection errors programmatically
 mysqli_report(MYSQLI_REPORT_OFF);

@@ -9,7 +9,7 @@ include_once __DIR__ . '/../backend/db_error_page.php';
 $contact_host = getenv('CONTACT_DB_HOST') ?: getenv('DB_HOST') ?: "localhost";
 $contact_user = getenv('CONTACT_DB_USER') ?: getenv('DB_USER') ?: "root";
 $contact_pass = getenv('CONTACT_DB_PASSWORD') ?: getenv('DB_PASSWORD') ?: "";
-$contact_name = getenv('CONTACT_DB_NAME') ?: "user1";
+$contact_name = getenv('CONTACT_DB_NAME') ?: getenv('DB_NAME') ?: "user1";
 
 // Disable strict exception throwing to handle connection errors programmatically
 mysqli_report(MYSQLI_REPORT_OFF);

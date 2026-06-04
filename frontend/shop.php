@@ -1,0 +1,1886 @@
+<?php
+session_start();
+include '../backend/p2.php';
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop</title>
+     <!-- Font Awesome -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Slick Slider CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"/>
+
+    <!-- jQuery and Slick JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+    
+    <style>
+    *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body{
+            margin:0px;
+            background:white;
+            min-height: 95px;
+        }
+
+        header{
+            width:100%;
+            height: 100px;
+            background:#f5f1f1;
+            padding:20px 60px;
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+        }
+
+        /* Logo */
+        .logo img{
+            width:100px;
+        }
+
+        /* Menu */
+        nav ul{
+            display:flex;
+            list-style:none;
+            gap:35px;
+        }
+
+        nav ul li a{
+            text-decoration:none;
+            color:#9b4d5d;
+            font-size:14px;
+            transition:0.3s;
+        }
+
+        nav ul li a:hover{
+            color:#000;
+        }
+
+        /* Icons */
+        .icons{
+            display:flex;
+            gap:18px;
+        }
+
+        .icons i{
+            color:#9b4d5d;
+            cursor:pointer;
+            font-size:15px;
+            transition:0.3s;
+        }
+
+        .icons i:hover{
+            color:#000;
+        }
+        .hamburger{
+            display: none;
+        }
+        /* subscribe */
+     .line{
+        width: 100%;
+        height: 2px;
+        background-color: #d8b5b5; /* line color */
+        margin-top: 20px;
+    }
+    /* ---- TRENDING SECTION ---- */
+        .trending-section {
+            padding: 40px 12px;
+            min-height: unset;
+        }
+
+        .trending-section::before,
+        .trending-section::after {
+            width: 3px;
+            top: 10px;
+            bottom: 10px;
+        }
+
+        .trending-section::before { left: 10px; }
+        .trending-section::after  { right: 10px; }
+
+        .btn-box {
+            margin-top: 30px;
+        }
+
+        .view-btn {
+            font-size: 15px;
+            padding: 12px 30px;
+        }
+        
+    /* ---- PRODUCT CARDS (Desktop & Hover Effects) ---- */
+    .product-container{
+        display:flex;
+        justify-content:center;
+        gap:30px;
+        flex-wrap:wrap;
+        max-width: 1300px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .product-card{
+        width:280px;
+        background:#ffffff;
+        border-radius:15px;
+        overflow:hidden;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+        border: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .product-card:hover{
+        transform:translateY(-12px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        gap: 10px;
+    }
+
+    .product-image-container {
+        height:260px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        background:#fcfcfc;
+        padding: 20px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .product-image-container img{
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        transition: 0.6s ease;
+    }
+
+    .product-card:hover .product-image-container img {
+        transform: scale(1.1);
+    }
+
+    .product-details{
+        background: #954D59;
+        color: white;
+        padding: 25px 20px;
+        text-align: center;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .product-title {
+        font-size: 17px;
+        font-weight: 600;
+        margin-bottom: 12px;
+        color: white;
+        line-height: 1.4;
+        min-height: 48px;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+    }
+
+    .product-price {
+        display: flex;
+        justify-content: center;
+        align-items: baseline;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+
+    .current-price {
+        font-size: 24px;
+        font-weight: 700;
+    }
+
+    .currency {
+        font-size: 16px;
+        margin-right: 2px;
+    }
+
+    .original-price {
+        font-size: 14px;
+        text-decoration: line-through;
+        opacity: 0.6;
+    }
+
+    .add-to-cart-btn {
+        background: #f7d37b;
+        color: #000;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 15px;
+        width: 100%;
+        cursor: pointer;
+        transition: 0.3s;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .add-to-cart-btn:hover {
+        background: white;
+        transform: scale(1.05);
+    }
+
+
+/* Footer CSS */
+        footer {
+            background-color:#F5F1F0;
+            color: #954D59;
+            padding: 50px 20px;
+            margin-top: 50px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        footer .container {
+            max-width: 100%;
+            margin: 0 auto;
+        }
+        footer .row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            justify-content: space-between;
+        }
+        footer .col-md-4 {
+            flex: 1;
+            min-width: 250px;
+        }
+        footer h3 {
+           color: #954D59;
+            margin-bottom: 25px;
+            font-size: 22px;
+            font-weight: 500;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        footer h3::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 50px;
+            height: 2px;
+            background-color: #f7ca00;
+        }
+        footer ul {
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+        footer li {
+            margin-bottom: 12px;
+        }
+        footer a {
+            color: #954D59;
+            text-decoration: none;
+            transition: color 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        footer a:hover {
+            color: #f78000e3;
+        }
+        footer p {
+            color: #954D59;
+            line-height: 1.6;
+            margin: 8px 0;
+        }
+       footer .line{
+        width: 100%;
+        height: 2px;
+        background-color: #d8b5b5; /* line color */
+        margin-top: 20px;
+    }
+    /* Social Icons */
+    .social-icons a{
+        color:#9b6b6b;
+        margin-right:15px;
+        font-size:18px;
+        transition:0.3s;
+        text-decoration:none;
+    }
+
+    .social-icons a:hover{
+        color:#000;
+    }
+
+    /* Center Text */
+    .footer-text{
+        color:#9b6b6b;
+        font-size:14px;
+        text-align:center;
+    }
+
+    .footer-text a{
+        color:#9b6b6b;
+        text-decoration:none;
+        margin:0 8px;
+    }
+
+    .footer-text a:hover{
+        text-decoration:underline;
+    }
+
+    /* Payment Icons */
+    .payment-icons img{
+        width:45px;
+        margin-left:10px;
+    }
+
+    @media(max-width:768px){
+        .footer-container{
+            flex-direction:column;
+            gap:15px;
+            text-align:center;
+        }
+    }
+
+    /* =============================================
+       SEARCH OVERLAY & LIVE RESULTS CSS
+       ============================================= */
+    .search-backdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(4px);
+        z-index: 998;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+    }
+
+    .search-backdrop.active {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .search-overlay {
+        position: fixed;
+        top: -120px;
+        left: 0;
+        width: 100%;
+        height: 90px;
+        background: #ffffff;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        z-index: 999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        padding: 0 40px;
+    }
+
+    .search-overlay.active {
+        top: 0;
+    }
+
+    .search-container {
+        width: 100%;
+        max-width: 800px;
+        display: flex;
+        align-items: center;
+        position: relative;
+        gap: 15px;
+    }
+
+    .search-input-wrapper {
+        flex: 1;
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .search-input-wrapper i.search-icon-inside {
+        position: absolute;
+        left: 20px;
+        color: #9b4d5d;
+        font-size: 18px;
+    }
+
+    .search-input-wrapper input {
+        width: 100%;
+        padding: 14px 50px 14px 55px;
+        border: 2px solid #e8dede;
+        border-radius: 50px;
+        font-size: 16px;
+        outline: none;
+        transition: all 0.3s ease;
+        background-color: #fcfcfc;
+        color: #333;
+    }
+
+    .search-input-wrapper input:focus {
+        border-color: #9b4d5d;
+        background-color: #ffffff;
+        box-shadow: 0 0 10px rgba(155, 77, 93, 0.15);
+    }
+
+    .search-input-wrapper .close-search-btn {
+        position: absolute;
+        right: 20px;
+        color: #9b4d5d;
+        cursor: pointer;
+        font-size: 18px;
+        transition: color 0.2s;
+    }
+
+    .search-input-wrapper .close-search-btn:hover {
+        color: #000000;
+    }
+
+    .search-results-dropdown {
+        position: absolute;
+        top: 105%;
+        left: 0;
+        width: 100%;
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+        border: 1px solid #e8dede;
+        max-height: 400px;
+        overflow-y: auto;
+        z-index: 1000;
+        display: none;
+        opacity: 0;
+        transform: translateY(10px);
+        transition: all 0.3s ease;
+        padding: 8px 0;
+    }
+
+    .search-results-dropdown.active {
+        display: block;
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .search-result-item {
+        display: flex;
+        align-items: center;
+        padding: 12px 20px;
+        gap: 15px;
+        text-decoration: none;
+        color: #333;
+        transition: background-color 0.2s ease;
+        border-bottom: 1px solid #f9f6f6;
+    }
+
+    .search-result-item:last-child {
+        border-bottom: none;
+    }
+
+    .search-result-item:hover {
+        background-color: #fdfafb;
+    }
+
+    .search-result-item img {
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
+        border-radius: 6px;
+        border: 1px solid #e8dede;
+    }
+
+    .search-result-info {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .search-result-title {
+        font-size: 15px;
+        font-weight: 600;
+        color: #9b4d5d;
+        margin-bottom: 4px;
+    }
+
+    .search-result-price {
+        font-size: 14px;
+        color: #666;
+        font-weight: 500;
+    }
+
+    .search-result-no-results {
+        padding: 20px;
+        text-align: center;
+        color: #888;
+        font-size: 15px;
+    }
+
+    /* Styled Search Results Summary Banner inside product grid toolbar */
+    .search-summary-banner {
+        width: 100%;
+        background: #fdfafb;
+        border: 1px solid #e8dede;
+        border-radius: 12px;
+        padding: 15px 25px;
+        margin-bottom: 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+    }
+
+    .search-summary-text {
+        font-size: 16px;
+        color: #333;
+        font-family: Georgia, 'Times New Roman', Times, serif;
+    }
+
+    .search-summary-text span {
+        color: #9b4d5d;
+        font-weight: 600;
+    }
+
+    .clear-search-btn {
+        background: #9b4d5d;
+        color: #ffffff;
+        border: none;
+        padding: 8px 18px;
+        border-radius: 50px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .clear-search-btn:hover {
+        background: #000000;
+    }
+
+    @media screen and (max-width: 768px) {
+        .search-overlay {
+            height: 80px;
+            padding: 0 15px;
+        }
+        .search-input-wrapper input {
+            padding: 12px 45px 12px 45px;
+            font-size: 14px;
+        }
+        .search-input-wrapper i.search-icon-inside {
+            left: 15px;
+            font-size: 16px;
+        }
+        .search-input-wrapper .close-search-btn {
+            right: 15px;
+            font-size: 16px;
+        }
+        .search-summary-banner {
+            padding: 12px 18px;
+            flex-direction: column;
+            gap: 10px;
+            align-items: flex-start;
+        }
+        .clear-search-btn {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+
+    /* =============================================
+       WISHLIST SYSTEM CSS
+       ============================================= */
+    .header-wishlist-link {
+        position: relative;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .wishlist-badge {
+        position: absolute;
+        top: -7px;
+        right: -7px;
+        background-color: #9b4d5d;
+        color: #ffffff;
+        font-size: 10px;
+        font-weight: 700;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #ffffff;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    /* Wishlist button overlay on product cards */
+    .product-image-container {
+        position: relative;
+    }
+
+    .wishlist-btn {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        width: 36px;
+        height: 36px;
+        background: #ffffff;
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+        z-index: 10;
+    }
+
+    .wishlist-btn i {
+        color: #9b4d5d;
+        font-size: 16px;
+        transition: transform 0.2s ease, color 0.2s ease;
+    }
+
+    .wishlist-btn:hover {
+        transform: scale(1.1);
+        background: #fdfafb;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
+    }
+
+    .wishlist-btn:active i {
+        transform: scale(0.8);
+    }
+
+    .wishlist-btn.active i {
+        color: #e03a3a;
+    }
+    /* --- Mobile (max-width: 768px) --- */
+    @media screen and (max-width: 768px) {
+
+        /* ---- HEADER ---- */
+        header {
+            padding: 12px 18px;
+            height: auto;
+            position: relative;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Hamburger icon — LEFT (order 1) */
+        .hamburger {
+            display: flex;
+            align-items: center;
+            font-size: 26px;
+            cursor: pointer;
+            color: #9b4d5d;
+            order: 1;
+            flex: 1;
+            justify-content: flex-start;
+        }
+
+        /* Logo — CENTER (order 2) */
+        .logo {
+            order: 2;
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .logo img {
+            width: 70px;
+        }
+
+        /* Icons — RIGHT (order 3) */
+        .icons {
+            display: flex;
+            gap: 14px;
+            order: 3;
+            flex: 1;
+            justify-content: flex-end;
+            align-items: center;
+        } 
+
+        .icons i {
+            font-size: 18px;
+        }
+  /* Nav menu — full width below header row (order 4) */
+        nav {
+            order: 4;
+            width: 100%;
+            flex-basis: 100%;
+        }
+
+        nav ul {
+            display: none;
+            flex-direction: column;
+            gap: 0;
+            background: #f5f1f1;
+            padding: 10px 0;
+            margin-top: 8px;
+            border-top: 1px solid #e0d0d4;
+        }
+
+        nav ul.show {
+            display: flex;
+        }
+
+        nav ul li {
+            border-bottom: 1px solid #e8dede;
+        }
+
+        nav ul li a {
+            display: block;
+            padding: 12px 20px;
+            font-size: 15px;
+            color: #9b4d5d;
+        }
+    }
+
+    </style>
+</head>
+<body>
+
+<!-- Search Overlay Components -->
+<div class="search-backdrop" id="searchBackdrop"></div>
+<div class="search-overlay" id="searchOverlay">
+    <div class="search-container">
+        <div class="search-input-wrapper">
+            <i class="fa-solid fa-magnifying-glass search-icon-inside"></i>
+            <input type="text" id="searchInput" placeholder="Search for products (ring, bangle, earrings, necklace)..." autocomplete="on">
+            <i class="fa-solid fa-xmark close-search-btn" id="closeSearch"></i>
+        </div>
+        <div class="search-results-dropdown" id="searchResultsDropdown"></div>
+    </div>
+</div>
+
+    <header>
+
+    <!-- Logo -->
+    <div class="logo">
+        <!-- Replace logo.png with your image -->
+        <a href="home.php"><img src="images/1.jpg" alt="Logo"></a>
+       </div>
+       <!-- hamburger icon -->
+       <div class="hamburger" onclick="toggleMenu()">
+        ☰
+    </div>
+
+    <!-- Menu -->
+    <nav>
+       
+        <ul id="menu">
+            <li><a href="home.php"><b>Home</b></a></li>
+            <li><a href="product.php">Product</a></li>
+            <li><a href="shop.php">Shop</a></li>
+            <li><a href="blog.php">Blog</a></li>
+            <li><a href="featured.php">Featured</a></li>
+        </ul>
+    </nav>
+ <!-- Icons -->
+    <div class="icons">
+        <i class="fa-solid fa-magnifying-glass" id="searchIconBtn"></i>
+        <a href="<?php echo isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true ? 'profile.php' : 'login.php'; ?>"><i class="fa-regular fa-user"></i></a>
+        <a href="wishlist.php" class="header-wishlist-link">
+            <i class="fa-regular fa-heart" id="wishlistIcon"></i>
+            <span class="wishlist-badge" id="wishlistBadge">0</span>
+        </a>
+        <a href="add to cart.php"><i class="fa-solid fa-bag-shopping"></i></a>
+    </div>
+</header>
+ <!-- Product Grid -->
+        <div class="product-container" id="productGrid">
+            <!-- Card 1 (Rings, In Stock) -->
+            <div class="product-card" data-collection="rings" data-availability="in-stock" data-price="1499" data-sales="250" data-date="2026-05-15" data-featured="true">
+                <div class="product-image-container">
+                    <a href="product detail.php"><img src="ring images/1.jpg" alt="Gold Plated Diamond Ring"></a>
+                
+                    <button class="wishlist-btn" type="button" aria-label="Add to wishlist"><i class="fa-regular fa-heart"></i></button>
+                </div>
+                <div class="product-details">
+                    <h3 class="product-title">Gold Plated Diamond Ring</h3>
+                    <div class="product-price">
+                        <span class="currency">₹</span>
+                        <span class="current-price">1,499</span>
+                        <span class="original-price">₹3,099</span>
+                    </div>
+                    <form action="../api/insert_cart.php" method="post">
+                        <input type="hidden" name="name" value="Gold Plated Diamond Ring">
+                        <input type="hidden" name="price" value="1,499">
+                        <input type="hidden" name="image" value="ring images/1.jpg">
+                        <button type="submit" name="add_to_cart" class="add-to-cart-btn">Add to Cart</button>
+                    </form>
+                </div>
+            </div>
+            <!-- Card 2 (Rings, In Stock) -->
+            <div class="product-card" data-collection="rings" data-availability="in-stock" data-price="1499" data-sales="250" data-date="2026-05-15" data-featured="true">
+                <div class="product-image-container">
+                    <a href="product detail.php"><img src="ring images/2.jpg" alt="Gold Plated Diamond Ring"></a>
+                
+                    <button class="wishlist-btn" type="button" aria-label="Add to wishlist"><i class="fa-regular fa-heart"></i></button>
+                </div>
+                <div class="product-details">
+                    <h3 class="product-title">Clara 925 Sterling Silver Sky Blue Heart Pendant Earring Chain Bracelet Ring Jewellery Set</h3>
+                    <div class="product-price">
+                        <span class="currency">₹</span>
+                        <span class="current-price">2468</span>
+                        <span class="original-price">₹3,998</span>
+                    </div>
+                    <form action="../api/insert_cart.php" method="post">
+                        <input type="hidden" name="name" value="Clara 925 Sterling Silver Sky Blue Heart Pendant Earring Chain Bracelet Ring Jewellery Set">
+                        <input type="hidden" name="price" value="2468">
+                        <input type="hidden" name="image" value="ring images/2.jpg">
+                        <button type="submit" name="add_to_cart" class="add-to-cart-btn">Add to Cart</button>
+                    </form>
+                </div>
+            </div>
+            <!-- Card 3 (Rings, In Stock) -->
+            <div class="product-card" data-collection="rings" data-availability="in-stock" data-price="1499" data-sales="250" data-date="2026-05-15" data-featured="true">
+                <div class="product-image-container">
+                    <a href="product detail.php"><img src="ring images/3.jpg" alt="Gold Plated Diamond Ring"></a>
+                
+                    <button class="wishlist-btn" type="button" aria-label="Add to wishlist"><i class="fa-regular fa-heart"></i></button>
+                </div>
+                <div class="product-details">
+                    <h3 class="product-title">YouBella Jewellery Stylish Silver Plated Solitaire Crystal Ring for Women and Girls</h3>
+                    <div class="product-price">
+                        <span class="currency">₹</span>
+                        <span class="current-price">169</span>
+                        <span class="original-price">₹3,099</span>
+                    </div>
+                    <form action="../api/insert_cart.php" method="post">
+                        <input type="hidden" name="name" value="YouBella Jewellery Stylish Silver Plated Solitaire Crystal Ring for Women and Girls">
+                        <input type="hidden" name="price" value="169">
+                        <input type="hidden" name="image" value="ring images/3.jpg">
+                        <button type="submit" name="add_to_cart" class="add-to-cart-btn">Add to Cart</button>
+                    </form>
+                </div>
+            </div>
+            <!-- Card 4 (Rings, In Stock) -->
+            <div class="product-card" data-collection="rings" data-availability="in-stock" data-price="1499" data-sales="250" data-date="2026-05-15" data-featured="true">
+                <div class="product-image-container">
+                    <a href="product detail.php"><img src="ring images/4.jpg" alt="Gold Plated Diamond Ring"></a>
+                
+                    <button class="wishlist-btn" type="button" aria-label="Add to wishlist"><i class="fa-regular fa-heart"></i></button>
+                </div>
+                <div class="product-details">
+                    <h3 class="product-title">Classic Gold Plated Plain Wedding Band Ring for Men and Women, Minimalist Smooth Design</h3>
+                    <div class="product-price">
+                        <span class="currency">₹</span>
+                        <span class="current-price">236</span>
+                        <span class="original-price">₹999</span>
+                    </div>
+                    <form action="../api/insert_cart.php" method="post">
+                        <input type="hidden" name="name" value="Classic Gold Plated Plain Wedding Band Ring for Men and Women, Minimalist Smooth Design">
+                        <input type="hidden" name="price" value="236">
+                        <input type="hidden" name="image" value="ring images/4.jpg">
+                        <button type="submit" name="add_to_cart" class="add-to-cart-btn">Add to Cart</button>
+                    </form>
+                </div>
+            </div>
+            <!-- Card 5 (Rings, In Stock) -->
+            <div class="product-card" data-collection="rings" data-availability="in-stock" data-price="1499" data-sales="250" data-date="2026-05-15" data-featured="true">
+                <div class="product-image-container">
+                    <a href="product detail.php"><img src="ring images/5.jpg" alt="Gold Plated Diamond Ring"></a>
+                
+                    <button class="wishlist-btn" type="button" aria-label="Add to wishlist"><i class="fa-regular fa-heart"></i></button>
+                </div>
+                <div class="product-details">
+                    <h3 class="product-title">925 Sterling Silver Diamond Engagement Ring</h3>
+                    <div class="product-price">
+                        <span class="currency">₹</span>
+                        <span class="current-price">2000</span>
+                        <span class="original-price">₹3,099</span>
+                    </div>
+                    <form action="../api/insert_cart.php" method="post">
+                        <input type="hidden" name="name" value="925 Sterling Silver Diamond Engagement Ring">
+                        <input type="hidden" name="price" value="2000">
+                        <input type="hidden" name="image" value="images/10.jpg">
+                        <button type="submit" name="add_to_cart" class="add-to-cart-btn">Add to Cart</button>
+                    </form>
+                </div>
+            </div>
+            <!-- Card 6(Rings, In Stock) -->
+            <div class="product-card" data-collection="rings" data-availability="in-stock" data-price="1499" data-sales="250" data-date="2026-05-15" data-featured="true">
+                <div class="product-image-container">
+                    <a href="product detail.php"><img src="ring images/1.jpg" alt="Gold Plated Diamond Ring"></a>
+                
+                    <button class="wishlist-btn" type="button" aria-label="Add to wishlist"><i class="fa-regular fa-heart"></i></button>
+                </div>
+                <div class="product-details">
+                    <h3 class="product-title">Gold Plated Diamond Ring</h3>
+                    <div class="product-price">
+                        <span class="currency">₹</span>
+                        <span class="current-price">1,499</span>
+                        <span class="original-price">₹3,099</span>
+                    </div>
+                    <form action="../api/insert_cart.php" method="post">
+                        <input type="hidden" name="name" value="Gold Plated Diamond Ring">
+                        <input type="hidden" name="price" value="1,499">
+                        <input type="hidden" name="image" value="images/10.jpg">
+                        <button type="submit" name="add_to_cart" class="add-to-cart-btn">Add to Cart</button>
+                    </form>
+                </div>
+            </div>
+ <!-- Card 6 (Rings, Out of Stock) -->
+            <div class="product-card" data-collection="rings" data-availability="in-stock" data-price="899" data-sales="90" data-date="2026-05-01" data-featured="false">
+                <div class="product-image-container">
+                    <a href="product detail.php"><img src="ring images/6.jpg" alt="Silver Diamond Ring"></a>
+                
+                    <button class="wishlist-btn" type="button" aria-label="Add to wishlist"><i class="fa-regular fa-heart"></i></button>
+                </div>
+                <div class="product-details">
+                    <h3 class="product-title">Fashionable Silver Plated Heart Adjustable Ring for Women and Girls</h3>
+                    <div class="product-price">
+                        <span class="currency">₹</span>
+                        <span class="current-price">3000</span>
+                        <span class="original-price">₹6000</span>
+                    </div>
+                    <form action="../api/insert_cart.php" method="post">
+                        <input type="hidden" name="name" value="Fashionable Silver Plated Heart Adjustable Ring for Women and Girls">
+                        <input type="hidden" name="price" value="3000">
+                        <input type="hidden" name="image" value=" ring images/6.jpg">
+                        <button type="submit" name="add_to_cart" class="add-to-cart-btn">Add to Cart</button>
+
+                    </form>
+                </div>
+            </div>
+             <!-- Card 7 (Rings, Out of Stock) -->
+            <div class="product-card" data-collection="rings" data-availability="in-stock" data-price="899" data-sales="90" data-date="2026-05-01" data-featured="false">
+                <div class="product-image-container">
+                    <a href="product detail.php"><img src="ring images/7.jpg" alt="Silver Diamond Ring"></a>
+                
+                    <button class="wishlist-btn" type="button" aria-label="Add to wishlist"><i class="fa-regular fa-heart"></i></button>
+                </div>
+                <div class="product-details">
+                    <h3 class="product-title">YouBella Jewellery Stylish Latest Gifts Silver Plated Adjustable Heart Shaped Love Proposal Ring for Girls and Women (Silver)</h3>
+                    <div class="product-price">
+                        <span class="currency">₹</span>
+                        <span class="current-price">3000</span>
+                        <span class="original-price">₹6000</span>
+                    </div>
+                    <form action="../api/insert_cart.php" method="post">
+                        <input type="hidden" name="name" value="YouBella Jewellery Stylish Latest Gifts Silver Plated Adjustable Heart Shaped Love Proposal Ring for Girls and Women (Silver)">
+                        <input type="hidden" name="price" value="3000">
+                        <input type="hidden" name="image" value=" ring images/7.jpg">
+                        <button type="submit" name="add_to_cart" class="add-to-cart-btn">Add to Cart</button>
+
+                    </form>
+                </div>
+            </div>
+            <!-- Card 9(Rings, Out of Stock) -->
+            <div class="product-card" data-collection="rings" data-availability="in-stock" data-price="899" data-sales="90" data-date="2026-05-01" data-featured="false">
+                <div class="product-image-container">
+                    <a href="product detail.php"><img src="ring images/9.jpg" alt="Silver Diamond Ring"></a>
+                
+                    <button class="wishlist-btn" type="button" aria-label="Add to wishlist"><i class="fa-regular fa-heart"></i></button>
+                </div>
+                <div class="product-details">
+                    <h3 class="product-title">Okos Women Fashion Jewellery Rhodium Plated Solitaire Style Adjustable Heart Finger Ring with Cz Stone For Girls and Women</h3>
+                    <div class="product-price">
+                        <span class="currency">₹</span>
+                        <span class="current-price">5000</span>
+                        <span class="original-price">₹7000</span>
+                    </div>
+                    <form action="../api/insert_cart.php" method="post">
+                        <input type="hidden" name="name" value="Fashionable Silver Plated Heart Adjustable Ring for Women and Girls">
+                        <input type="hidden" name="price" value="3000">
+                        <input type="hidden" name="image" value=" ring images/6.jpg">
+                        <button type="submit" name="add_to_cart" class="add-to-cart-btn">Add to Cart</button>
+
+                    </form>
+                </div>
+            </div>
+            <!-- Card 10  -->
+            <div class="product-card" data-collection="rings" data-availability="in-stock" data-price="899" data-sales="90" data-date="2026-05-01" data-featured="false">
+                <div class="product-image-container">
+                    <a href="product detail.php"><img src="ring images/10.jpg" alt="Silver Diamond Ring"></a>
+                
+                    <button class="wishlist-btn" type="button" aria-label="Add to wishlist"><i class="fa-regular fa-heart"></i></button>
+                </div>
+                <div class="product-details">
+                    <h3 class="product-title">Fashionable Silver Plated Chain Ring for Women and Girls</h3>
+                    <div class="product-price">
+                        <span class="currency">₹</span>
+                        <span class="current-price">7000</span>
+                        <span class="original-price">₹8000</span>
+                    </div>
+                    <form action="../api/insert_cart.php" method="post">
+                        <input type="hidden" name="name" value="Fashionable Silver Plated Heart Adjustable Ring for Women and Girls">
+                        <input type="hidden" name="price" value="3000">
+                        <input type="hidden" name="image" value=" ring images/6.jpg">
+                        <button type="submit" name="add_to_cart" class="add-to-cart-btn">Add to Cart</button>
+
+                    </form>
+                </div>
+            </div>
+            <!--Bracelet -->
+            <!-- Card 1 (Bracelets, In Stock) -->
+            <div class="product-card" data-collection="bracelets" data-availability="in-stock" data-price="2499" data-sales="180" data-date="2026-05-10" data-featured="false">
+                <div class="product-image-container">
+                    <a href="product detail.php"><img src="bracelet images/1.jpg" alt="Classic Gold Bangle"></a>
+                
+                    <button class="wishlist-btn" type="button" aria-label="Add to wishlist"><i class="fa-regular fa-heart"></i></button>
+                </div>
+                <div class="product-details">
+                    <h3 class="product-title">Classic Gold Bangle</h3>
+                    <div class="product-price">
+                        <span class="currency">₹</span>
+                        <span class="current-price">2,499</span>
+                        <span class="original-price">₹4,999</span>
+                    </div>
+                    <form action="../api/insert_cart.php" method="post">
+                        <input type="hidden" name="name" value="Classic Gold Bangle">
+                        <input type="hidden" name="price" value="2,499">
+                        <input type="hidden" name="image" value=" bracelet images/10.jpg">
+                        <button type="submit" name="add_to_cart" class="add-to-cart-btn">Add to Cart</button>
+                    </form>
+                </div>
+            </div>
+             <!-- Card 1 (Bracelets, In Stock) -->
+            <div class="product-card" data-collection="bracelets" data-availability="in-stock" data-price="2499" data-sales="180" data-date="2026-05-10" data-featured="false">
+                <div class="product-image-container">
+                    <a href="product detail.php"><img src="bracelet images/1.jpg" alt="Classic Gold Bangle"></a>
+                
+                    <button class="wishlist-btn" type="button" aria-label="Add to wishlist"><i class="fa-regular fa-heart"></i></button>
+                </div>
+                <div class="product-details">
+                    <h3 class="product-title">Classic Gold Bangle</h3>
+                    <div class="product-price">
+                        <span class="currency">₹</span>
+                        <span class="current-price">2,499</span>
+                        <span class="original-price">₹4,999</span>
+                    </div>
+                    <form action="../api/insert_cart.php" method="post">
+                        <input type="hidden" name="name" value="Classic Gold Bangle">
+                        <input type="hidden" name="price" value="2,499">
+                        <input type="hidden" name="image" value=" bracelet images/10.jpg">
+                        <button type="submit" name="add_to_cart" class="add-to-cart-btn">Add to Cart</button>
+                    </form>
+                </div>
+            </div> <!-- Card 1 (Bracelets, In Stock) -->
+            <div class="product-card" data-collection="bracelets" data-availability="in-stock" data-price="2499" data-sales="180" data-date="2026-05-10" data-featured="false">
+                <div class="product-image-container">
+                    <a href="product detail.php"><img src="bracelet images/1.jpg" alt="Classic Gold Bangle"></a>
+                
+                    <button class="wishlist-btn" type="button" aria-label="Add to wishlist"><i class="fa-regular fa-heart"></i></button>
+                </div>
+                <div class="product-details">
+                    <h3 class="product-title">Classic Gold Bangle</h3>
+                    <div class="product-price">
+                        <span class="currency">₹</span>
+                        <span class="current-price">2,499</span>
+                        <span class="original-price">₹4,999</span>
+                    </div>
+                    <form action="../api/insert_cart.php" method="post">
+                        <input type="hidden" name="name" value="Classic Gold Bangle">
+                        <input type="hidden" name="price" value="2,499">
+                        <input type="hidden" name="image" value=" bracelet images/10.jpg">
+                        <button type="submit" name="add_to_cart" class="add-to-cart-btn">Add to Cart</button>
+                    </form>
+                </div>
+            </div> <!-- Card 1 (Bracelets, In Stock) -->
+            <div class="product-card" data-collection="bracelets" data-availability="in-stock" data-price="2499" data-sales="180" data-date="2026-05-10" data-featured="false">
+                <div class="product-image-container">
+                    <a href="product detail.php"><img src="bracelet images/1.jpg" alt="Classic Gold Bangle"></a>
+                
+                    <button class="wishlist-btn" type="button" aria-label="Add to wishlist"><i class="fa-regular fa-heart"></i></button>
+                </div>
+                <div class="product-details">
+                    <h3 class="product-title">Classic Gold Bangle</h3>
+                    <div class="product-price">
+                        <span class="currency">₹</span>
+                        <span class="current-price">2,499</span>
+                        <span class="original-price">₹4,999</span>
+                    </div>
+                    <form action="../api/insert_cart.php" method="post">
+                        <input type="hidden" name="name" value="Classic Gold Bangle">
+                        <input type="hidden" name="price" value="2,499">
+                        <input type="hidden" name="image" value=" bracelet images/10.jpg">
+                        <button type="submit" name="add_to_cart" class="add-to-cart-btn">Add to Cart</button>
+                    </form>
+                </div>
+            </div> <!-- Card 1 (Bracelets, In Stock) -->
+            <div class="product-card" data-collection="bracelets" data-availability="in-stock" data-price="2499" data-sales="180" data-date="2026-05-10" data-featured="false">
+                <div class="product-image-container">
+                    <a href="product detail.php"><img src="bracelet images/1.jpg" alt="Classic Gold Bangle"></a>
+                
+                    <button class="wishlist-btn" type="button" aria-label="Add to wishlist"><i class="fa-regular fa-heart"></i></button>
+                </div>
+                <div class="product-details">
+                    <h3 class="product-title">Classic Gold Bangle</h3>
+                    <div class="product-price">
+                        <span class="currency">₹</span>
+                        <span class="current-price">2,499</span>
+                        <span class="original-price">₹4,999</span>
+                    </div>
+                    <form action="../api/insert_cart.php" method="post">
+                        <input type="hidden" name="name" value="Classic Gold Bangle">
+                        <input type="hidden" name="price" value="2,499">
+                        <input type="hidden" name="image" value=" bracelet images/10.jpg">
+                        <button type="submit" name="add_to_cart" class="add-to-cart-btn">Add to Cart</button>
+                    </form>
+                </div>
+            </div> <!-- Card 1 (Bracelets, In Stock) -->
+            <div class="product-card" data-collection="bracelets" data-availability="in-stock" data-price="2499" data-sales="180" data-date="2026-05-10" data-featured="false">
+                <div class="product-image-container">
+                    <a href="product detail.php"><img src="bracelet images/1.jpg" alt="Classic Gold Bangle"></a>
+                
+                    <button class="wishlist-btn" type="button" aria-label="Add to wishlist"><i class="fa-regular fa-heart"></i></button>
+                </div>
+                <div class="product-details">
+                    <h3 class="product-title">Classic Gold Bangle</h3>
+                    <div class="product-price">
+                        <span class="currency">₹</span>
+                        <span class="current-price">2,499</span>
+                        <span class="original-price">₹4,999</span>
+                    </div>
+                    <form action="../api/insert_cart.php" method="post">
+                        <input type="hidden" name="name" value="Classic Gold Bangle">
+                        <input type="hidden" name="price" value="2,499">
+                        <input type="hidden" name="image" value=" bracelet images/10.jpg">
+                        <button type="submit" name="add_to_cart" class="add-to-cart-btn">Add to Cart</button>
+                    </form>
+                </div>
+            </div> <!-- Card 1 (Bracelets, In Stock) -->
+            <div class="product-card" data-collection="bracelets" data-availability="in-stock" data-price="2499" data-sales="180" data-date="2026-05-10" data-featured="false">
+                <div class="product-image-container">
+                    <a href="product detail.php"><img src="bracelet images/1.jpg" alt="Classic Gold Bangle"></a>
+                
+                    <button class="wishlist-btn" type="button" aria-label="Add to wishlist"><i class="fa-regular fa-heart"></i></button>
+                </div>
+                <div class="product-details">
+                    <h3 class="product-title">Classic Gold Bangle</h3>
+                    <div class="product-price">
+                        <span class="currency">₹</span>
+                        <span class="current-price">2,499</span>
+                        <span class="original-price">₹4,999</span>
+                    </div>
+                    <form action="../api/insert_cart.php" method="post">
+                        <input type="hidden" name="name" value="Classic Gold Bangle">
+                        <input type="hidden" name="price" value="2,499">
+                        <input type="hidden" name="image" value=" bracelet images/10.jpg">
+                        <button type="submit" name="add_to_cart" class="add-to-cart-btn">Add to Cart</button>
+                    </form>
+                </div>
+            </div> <!-- Card 1 (Bracelets, In Stock) -->
+            <div class="product-card" data-collection="bracelets" data-availability="in-stock" data-price="2499" data-sales="180" data-date="2026-05-10" data-featured="false">
+                <div class="product-image-container">
+                    <a href="product detail.php"><img src="bracelet images/1.jpg" alt="Classic Gold Bangle"></a>
+                
+                    <button class="wishlist-btn" type="button" aria-label="Add to wishlist"><i class="fa-regular fa-heart"></i></button>
+                </div>
+                <div class="product-details">
+                    <h3 class="product-title">Classic Gold Bangle</h3>
+                    <div class="product-price">
+                        <span class="currency">₹</span>
+                        <span class="current-price">2,499</span>
+                        <span class="original-price">₹4,999</span>
+                    </div>
+                    <form action="../api/insert_cart.php" method="post">
+                        <input type="hidden" name="name" value="Classic Gold Bangle">
+                        <input type="hidden" name="price" value="2,499">
+                        <input type="hidden" name="image" value=" bracelet images/10.jpg">
+                        <button type="submit" name="add_to_cart" class="add-to-cart-btn">Add to Cart</button>
+                    </form>
+                </div>
+            </div> <!-- Card 1 (Bracelets, In Stock) -->
+            <div class="product-card" data-collection="bracelets" data-availability="in-stock" data-price="2499" data-sales="180" data-date="2026-05-10" data-featured="false">
+                <div class="product-image-container">
+                    <a href="product detail.php"><img src="bracelet images/1.jpg" alt="Classic Gold Bangle"></a>
+                
+                    <button class="wishlist-btn" type="button" aria-label="Add to wishlist"><i class="fa-regular fa-heart"></i></button>
+                </div>
+                <div class="product-details">
+                    <h3 class="product-title">Classic Gold Bangle</h3>
+                    <div class="product-price">
+                        <span class="currency">₹</span>
+                        <span class="current-price">2,499</span>
+                        <span class="original-price">₹4,999</span>
+                    </div>
+                    <form action="../api/insert_cart.php" method="post">
+                        <input type="hidden" name="name" value="Classic Gold Bangle">
+                        <input type="hidden" name="price" value="2,499">
+                        <input type="hidden" name="image" value=" bracelet images/10.jpg">
+                        <button type="submit" name="add_to_cart" class="add-to-cart-btn">Add to Cart</button>
+                    </form>
+                </div>
+            </div> 
+            <!-- Card 1 (Bracelets, In Stock) -->
+            <div class="product-card" data-collection="bracelets" data-availability="in-stock" data-price="2499" data-sales="180" data-date="2026-05-10" data-featured="false">
+                <div class="product-image-container">
+                    <a href="product detail.php"><img src="bracelet images/1.jpg" alt="Classic Gold Bangle"></a>
+                
+                    <button class="wishlist-btn" type="button" aria-label="Add to wishlist"><i class="fa-regular fa-heart"></i></button>
+                </div>
+                <div class="product-details">
+                    <h3 class="product-title">Classic Gold Bangle</h3>
+                    <div class="product-price">
+                        <span class="currency">₹</span>
+                        <span class="current-price">2,499</span>
+                        <span class="original-price">₹4,999</span>
+                    </div>
+                    <form action="../api/insert_cart.php" method="post">
+                        <input type="hidden" name="name" value="Classic Gold Bangle">
+                        <input type="hidden" name="price" value="2,499">
+                        <input type="hidden" name="image" value=" bracelet images/10.jpg">
+                        <button type="submit" name="add_to_cart" class="add-to-cart-btn">Add to Cart</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Card 3 (Earrings, In Stock) -->
+            <div class="product-card" data-collection="earrings" data-availability="in-stock" data-price="3999" data-sales="320" data-date="2026-05-18" data-featured="true">
+                <div class="product-image-container">
+                    <a href="product detail.php"><img src="images/10.jpg" alt="Diamond Stud Earrings"></a>
+                
+                    <button class="wishlist-btn" type="button" aria-label="Add to wishlist"><i class="fa-regular fa-heart"></i></button>
+                </div>
+                <div class="product-details">
+                    <h3 class="product-title">Diamond Stud Earrings</h3>
+                    <div class="product-price">
+                        <span class="currency">₹</span>
+                        <span class="current-price">3,999</span>
+                        <span class="original-price">₹7,499</span>
+                    </div>
+                    <form action="../api/insert_cart.php" method="post">
+                        <input type="hidden" name="name" value="Diamond Stud Earrings">
+                        <input type="hidden" name="price" value="3,999">
+                        <input type="hidden" name="image" value="images/10.jpg">
+                        <button type="submit" name="add_to_cart" class="add-to-cart-btn">Add to Cart</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Card 4 (Necklaces, In Stock) -->
+            <div class="product-card" data-collection="necklace" data-availability="in-stock" data-price="5299" data-sales="110" data-date="2026-05-05" data-featured="false">
+                <div class="product-image-container">
+                    <a href="product detail.php"><img src="images/10.jpg" alt="Luxury Pearl Necklace"></a>
+                
+                    <button class="wishlist-btn" type="button" aria-label="Add to wishlist"><i class="fa-regular fa-heart"></i></button>
+                </div>
+                <div class="product-details">
+                    <h3 class="product-title">Luxury Pearl Necklace</h3>
+                    <div class="product-price">
+                        <span class="currency">₹</span>
+                        <span class="current-price">5,299</span>
+                        <span class="original-price">₹9,999</span>
+                    </div>
+                    <form action="../api/insert_cart.php" method="post">
+                        <input type="hidden" name="name" value="Luxury Pearl Necklace">
+                        <input type="hidden" name="price" value="5,299">
+                        <input type="hidden" name="image" value="images/10.jpg">
+                        <button type="submit" name="add_to_cart" class="add-to-cart-btn">Add to Cart</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Card 5 (Earrings, In Stock) -->
+            <div class="product-card" data-collection="earrings" data-availability="in-stock" data-price="1299" data-sales="140" data-date="2026-05-12" data-featured="false">
+                <div class="product-image-container">
+                    <a href="product detail.php"><img src="images/10.jpg" alt="Elegant Gold Earrings"></a>
+                
+                    <button class="wishlist-btn" type="button" aria-label="Add to wishlist"><i class="fa-regular fa-heart"></i></button>
+                </div>
+                <div class="product-details">
+                    <h3 class="product-title">Elegant Gold Earrings</h3>
+                    <div class="product-price">
+                        <span class="currency">₹</span>
+                        <span class="current-price">1,299</span>
+                        <span class="original-price">₹2,499</span>
+                    </div>
+                    <form action="../api/insert_cart.php" method="post">
+                        <input type="hidden" name="name" value="Elegant Gold Earrings">
+                        <input type="hidden" name="price" value="1,299">
+                        <input type="hidden" name="image" value="images/10.jpg">
+                        <button type="submit" name="add_to_cart" class="add-to-cart-btn">Add to Cart</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Card 6 (Rings, Out of Stock) -->
+            <div class="product-card" data-collection="rings" data-availability="in-stock" data-price="899" data-sales="90" data-date="2026-05-01" data-featured="false">
+                <div class="product-image-container">
+                    <a href="product detail.php"><img src="ring images/6.jpg" alt="Silver Diamond Ring"></a>
+                
+                    <button class="wishlist-btn" type="button" aria-label="Add to wishlist"><i class="fa-regular fa-heart"></i></button>
+                </div>
+                <div class="product-details">
+                    <h3 class="product-title">Fashionable Silver Plated Heart Adjustable Ring for Women and Girls</h3>
+                    <div class="product-price">
+                        <span class="currency">₹</span>
+                        <span class="current-price">3000</span>
+                        <span class="original-price">₹6000</span>
+                    </div>
+                    <form action="../api/insert_cart.php" method="post">
+                        <input type="hidden" name="name" value="Fashionable Silver Plated Heart Adjustable Ring for Women and Girls">
+                        <input type="hidden" name="price" value="3000">
+                        <input type="hidden" name="image" value=" ring images/6.jpg">
+                        <button type="submit" name="add_to_cart" class="add-to-cart-btn">Add to Cart</button>
+
+                    </form>
+                </div>
+            </div>
+           
+
+
+            <!-- Card 7 (Bracelets, In Stock) -->
+            <div class="product-card" data-collection="bracelets" data-availability="in-stock" data-price="599" data-sales="210" data-date="2026-05-14" data-featured="true">
+                <div class="product-image-container">
+                    <a href="product detail.php"><img src="images/10.jpg" alt="Charming Pearl Bracelet"></a>
+                
+                    <button class="wishlist-btn" type="button" aria-label="Add to wishlist"><i class="fa-regular fa-heart"></i></button>
+                </div>
+                <div class="product-details">
+                    <h3 class="product-title">Charming Pearl Bracelet</h3>
+                    <div class="product-price">
+                        <span class="currency">₹</span>
+                        <span class="current-price">599</span>
+                        <span class="original-price">₹1,199</span>
+                    </div>
+                    <form action="../api/insert_cart.php" method="post">
+                        <input type="hidden" name="name" value="Charming Pearl Bracelet">
+                        <input type="hidden" name="price" value="599">
+                        <input type="hidden" name="image" value="images/10.jpg">
+                        <button type="submit" name="add_to_cart" class="add-to-cart-btn">Add to Cart</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Card 8 (Necklaces, Out of Stock) -->
+            <div class="product-card" data-collection="necklace" data-availability="out-of-stock" data-price="2999" data-sales="75" data-date="2026-05-08" data-featured="false">
+                <div class="product-image-container">
+                    <a href="product detail.php"><img src="images/10.jpg" alt="Vintage Gold Necklace"></a>
+                
+                    <button class="wishlist-btn" type="button" aria-label="Add to wishlist"><i class="fa-regular fa-heart"></i></button>
+                </div>
+                <div class="product-details">
+                    <h3 class="product-title">Vintage Gold Necklace (Sold Out)</h3>
+                    <div class="product-price">
+                        <span class="currency">₹</span>
+                        <span class="current-price">2,999</span>
+                        <span class="original-price">₹5,999</span>
+                    </div>
+                    <form action="../api/insert_cart.php" method="post">
+                        <input type="hidden" name="name" value="Vintage Gold Necklace">
+                        <input type="hidden" name="price" value="2,999">
+                        <input type="hidden" name="image" value="images/10.jpg">
+                        <button type="submit" name="add_to_cart" class="add-to-cart-btn" disabled style="background-color: #ccc; cursor: not-allowed; color: #666;">Out of Stock</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+
+<!-- subscribe  -->
+<div class="line"> </div>
+ <div class="subscribe">
+    <h3 style = "text-align:center; margin-bottom:20px; margin-top:30px">Subscribe to our newsletter</h3>
+    <p style = "text-align:center; margin-bottom:20px; margin-top:5px">Subscribe to our latest newspaper to get news about special discounts and upcoming sales</p>
+    <form action="../backend/p1.php" method="post" style="max-width:500px; margin:0 auto;">
+        <input type="email" id="email" name="email" placeholder="Your email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" title="Invalid email address" required style="width:100%; padding:12px; margin-bottom:20px; border:1px solid #ccc;">
+        <button type="submit" style="width:20%;margin-left: 160px; padding:12px; background-color:#954D59; color:white; border:none; cursor:pointer;">Subscribe</button>
+    </form>
+ </div>
+
+
+<!-- footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <img src="images/1.jpg" alt="Logo" style="width: 200px; height: 200px; border-radius: 100%;">
+            </div>
+            <div class="col-md-4">
+                <h3>Quick links</h3>
+                <p><i style="width: 20px;"></i><a href="#">Shipping policy</a></p>
+                <p><i style="width: 20px;"></i><a href="#">Return and Refund</a></p>
+                <p><i style="width: 20px;"></i><a href="#">Terms of Service</a></p>
+                <p><i style="width: 20px;"></i><a href="#">Privacy Policy</a></p>
+                <p><i style="width: 20px;"></i><a href="about.php">About Us</a></p>
+            </div>
+            <div class="col-md-4">
+                <a href="contact.php"><h3>Contact Us</h3></a>
+                <div class="social-icons">
+                    <p><i  style="width: 20px;"></i><a>+(91)9876-543-210</a></p>
+                    <p><i  style="width: 20px;"></i><a>sistarajewelry@gmail.com</a></p>
+                </div>
+            </div>
+            <div class="line"> </div>
+              <!-- Social Icons -->
+        <div class="social-icons">
+            <a href="https://www.instagram.com/"><i class="fa-brands fa-instagram"></i></a>
+            <a href="https://www.facebook.com/"><i class="fa-brands fa-facebook"></i></a>
+            <a href="https://www.twitter.com/"><i class="fa-brands fa-x-twitter"></i></a>
+            <a href="https://www.whatsapp.com/"><i class="fa-brands fa-whatsapp"></i></a>
+        </div>
+
+        <!-- Footer Text -->
+        <div class="footer-text">
+            © 2025, Sistaraja Jewelry Powered by Shopify
+            &nbsp; • &nbsp;
+            <a href="#">Refund Policy</a>
+            •
+            <a href="#">Privacy Policy</a>
+            •
+            <a href="#">Terms of Service</a>
+        </div>
+
+        <!-- Payment Icons -->
+        <div class="payment-icons">
+            <img src="images/5.jpg" alt="Visa">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal">
+        </div>
+
+        </div>
+    </div>
+</footer>
+  <script>
+    // Hamburger Menu Toggle
+    function toggleMenu() {
+        document.getElementById("menu").classList.toggle("show");
+    }
+
+    // Sidebar Accordion Toggle
+    function toggleFilterGroup(element) {
+        const content = element.nextElementSibling;
+        const icon = element.querySelector("i");
+        
+        if (content.style.maxHeight === "0px" || content.style.maxHeight === "") {
+            content.style.maxHeight = "500px";
+            content.style.opacity = "1";
+            icon.style.transform = "rotate(0deg)";
+        } else {
+            content.style.maxHeight = "0px";
+            content.style.opacity = "0";
+            icon.style.transform = "rotate(180deg)";
+        }
+    }
+
+    // Price Label Update
+    function updatePriceLabel(value) {
+        const formatted = parseFloat(value).toLocaleString('en-IN', {
+            maximumFractionDigits: 2,
+            minimumFractionDigits: 2
+        });
+        document.querySelector('.price-value').textContent = `₹0.00 - ₹${formatted}`;
+        applySortingFiltering();
+    }
+
+    // Main Filtering & Sorting Logic
+    function applySortingFiltering() {
+        const productGrid = document.getElementById("productGrid");
+        const cards = Array.from(productGrid.querySelectorAll(".product-card"));
+        
+        // 1. Gather Filter Values
+        const selectedCollections = Array.from(document.querySelectorAll('.filter-checkbox[data-filter="collection"]:checked')).map(cb => cb.value);
+        const selectedAvailability = Array.from(document.querySelectorAll('.filter-checkbox[data-filter="availability"]:checked')).map(cb => cb.value);
+        const maxPrice = parseFloat(document.getElementById("priceRange").value);
+        const searchInput = document.getElementById("searchInput");
+        const searchQuery = searchInput ? searchInput.value.trim().toLowerCase() : "";
+        
+        let visibleCount = 0;
+
+        // 2. Perform Filtering on all cards
+        cards.forEach(card => {
+            const col = card.dataset.collection;
+            const stock = card.dataset.availability;
+            const price = parseFloat(card.dataset.price);
+            const title = card.querySelector(".product-title").textContent.toLowerCase();
+
+            const matchesCollection = selectedCollections.includes(col);
+            const matchesAvailability = selectedAvailability.includes(stock);
+            const matchesPrice = price <= maxPrice;
+            const matchesSearch = searchQuery === "" || title.includes(searchQuery) || col.toLowerCase().includes(searchQuery);
+
+            if (matchesCollection && matchesAvailability && matchesPrice && matchesSearch) {
+                card.style.display = "flex";
+                visibleCount++;
+            } else {
+                card.style.display = "none";
+            }
+        });
+
+        // Update active products count label
+        document.getElementById("productCount").textContent = `${visibleCount} ${visibleCount === 1 ? 'product' : 'products'}`;
+
+        // 3. Perform Sorting
+        const sortValue = document.getElementById("sortDropdown").value;
+
+        cards.sort((a, b) => {
+            if (sortValue === "featured") {
+                const featA = a.dataset.featured === "true" ? 1 : 0;
+                const featB = b.dataset.featured === "true" ? 1 : 0;
+                return featB - featA; // Featured first
+            }
+            if (sortValue === "best-selling") {
+                const salesA = parseInt(a.dataset.sales) || 0;
+                const salesB = parseInt(b.dataset.sales) || 0;
+                return salesB - salesA; // High to low sales
+            }
+            if (sortValue === "alpha-asc") {
+                const titleA = a.querySelector(".product-title").textContent.trim().toLowerCase();
+                const titleB = b.querySelector(".product-title").textContent.trim().toLowerCase();
+                return titleA.localeCompare(titleB);
+            }
+            if (sortValue === "alpha-desc") {
+                const titleA = a.querySelector(".product-title").textContent.trim().toLowerCase();
+                const titleB = b.querySelector(".product-title").textContent.trim().toLowerCase();
+                return titleB.localeCompare(titleA);
+            }
+            if (sortValue === "price-asc") {
+                const priceA = parseFloat(a.dataset.price);
+                const priceB = parseFloat(b.dataset.price);
+                return priceA - priceB;
+            }
+            if (sortValue === "price-desc") {
+                const priceA = parseFloat(a.dataset.price);
+                const priceB = parseFloat(b.dataset.price);
+                return priceB - priceA;
+            }
+            if (sortValue === "date-asc") {
+                const dateA = new Date(a.dataset.date);
+                const dateB = new Date(b.dataset.date);
+                return dateA - dateB;
+            }
+            if (sortValue === "date-desc") {
+                const dateA = new Date(a.dataset.date);
+                const dateB = new Date(b.dataset.date);
+                return dateB - dateA;
+            }
+            return 0;
+        });
+
+        // Re-append sorted cards to the DOM grid container
+        cards.forEach(card => productGrid.appendChild(card));
+    }
+
+    // Dynamic Filter Count Calculator
+    function calculateDynamicFilterCounts() {
+        const cards = document.querySelectorAll('.product-card');
+        const counts = {
+            collection: { earrings: 0, necklace: 0, rings: 0, bracelets: 0 },
+            availability: { 'in-stock': 0, 'out-of-stock': 0 }
+        };
+
+        cards.forEach(card => {
+            const col = card.dataset.collection;
+            const stock = card.dataset.availability;
+            if (counts.collection[col] !== undefined) counts.collection[col]++;
+            if (counts.availability[stock] !== undefined) counts.availability[stock]++;
+        });
+
+        // Update checkbox labels count strings
+        for (const key in counts.collection) {
+            const labelSpan = document.querySelector(`.filter-checkbox[data-filter="collection"][value="${key}"] ~ .count`);
+            if (labelSpan) labelSpan.textContent = `(${counts.collection[key]})`;
+        }
+        for (const key in counts.availability) {
+            const labelSpan = document.querySelector(`.filter-checkbox[data-filter="availability"][value="${key}"] ~ .count`);
+            if (labelSpan) labelSpan.textContent = `(${counts.availability[key]})`;
+        }
+    }
+
+    // Initial setup on DOM Content Loaded
+    document.addEventListener("DOMContentLoaded", () => {
+        // Register change listeners for all checkboxes
+        document.querySelectorAll('.filter-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', applySortingFiltering);
+        });
+
+        // Calculate and render counts
+        calculateDynamicFilterCounts();
+        
+        // Execute initial filtering and sorting
+        applySortingFiltering();
+
+        // =============================================
+        // SEARCH OVERLAY & LIVE SUGGESTIONS
+        // =============================================
+        const searchIconBtn = document.getElementById("searchIconBtn");
+        const searchOverlay = document.getElementById("searchOverlay");
+        const searchBackdrop = document.getElementById("searchBackdrop");
+        const closeSearch = document.getElementById("closeSearch");
+        const searchInput = document.getElementById("searchInput");
+        const searchResultsDropdown = document.getElementById("searchResultsDropdown");
+
+        const productsList = [
+            <?php
+            $res_js = mysqli_query($con, "SELECT name, price, image, collection FROM store_products");
+            $js_items = [];
+            while ($p_js = mysqli_fetch_assoc($res_js)) {
+                $js_items[] = '{ name: ' . json_encode($p_js['name']) . ', price: ' . json_encode('₹' . number_format($p_js['price'])) . ', image: ' . json_encode($p_js['image']) . ', category: ' . json_encode($p_js['collection']) . ' }';
+            }
+            echo implode(",\n            ", $js_items);
+            ?>
+        ];
+
+        const openSearchOverlay = () => {
+            searchOverlay.classList.add("active");
+            searchBackdrop.classList.add("active");
+            setTimeout(() => searchInput.focus(), 100);
+            document.body.style.overflow = "hidden";
+        };
+
+        const closeSearchOverlay = () => {
+            searchOverlay.classList.remove("active");
+            searchBackdrop.classList.remove("active");
+            searchResultsDropdown.classList.remove("active");
+            document.body.style.overflow = "";
+        };
+
+        if (searchIconBtn) searchIconBtn.addEventListener("click", openSearchOverlay);
+        if (closeSearch) closeSearch.addEventListener("click", closeSearchOverlay);
+        if (searchBackdrop) searchBackdrop.addEventListener("click", closeSearchOverlay);
+
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape" && searchOverlay.classList.contains("active")) {
+                closeSearchOverlay();
+            }
+        });
+
+        // Search Input interaction for dynamic suggestions
+        searchInput.addEventListener("input", () => {
+            const query = searchInput.value.trim().toLowerCase();
+            if (query.length < 1) {
+                searchResultsDropdown.classList.remove("active");
+                searchResultsDropdown.innerHTML = "";
+                return;
+            }
+
+            const matches = productsList.filter(p => 
+                p.name.toLowerCase().includes(query) || 
+                p.category.toLowerCase().includes(query)
+            );
+
+            searchResultsDropdown.innerHTML = "";
+            if (matches.length > 0) {
+                matches.forEach(item => {
+                    const a = document.createElement("a");
+                    a.href = `product detail.php?name=${encodeURIComponent(item.name)}`;
+                    a.className = "search-result-item";
+                    a.innerHTML = `
+                        <img src="${item.image}" alt="${item.name}">
+                        <div class="search-result-info">
+                            <span class="search-result-title">${item.name}</span>
+                            <span class="search-result-price">${item.price}</span>
+                        </div>
+                    `;
+                    searchResultsDropdown.appendChild(a);
+                });
+            } else {
+                const div = document.createElement("div");
+                div.className = "search-result-no-results";
+                div.textContent = `No products found for "${searchInput.value}"`;
+                searchResultsDropdown.appendChild(div);
+            }
+            searchResultsDropdown.classList.add("active");
+        });
+
+        // Click search icon inside search input to submit search
+        const innerSearchIcon = searchOverlay.querySelector(".search-icon-inside");
+        if (innerSearchIcon) {
+            innerSearchIcon.style.cursor = "pointer";
+            innerSearchIcon.addEventListener("click", () => {
+                const query = searchInput.value.trim();
+                executeSearch(query);
+            });
+        }
+
+        // Submit search on Enter key
+        searchInput.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") {
+                const query = searchInput.value.trim();
+                executeSearch(query);
+            }
+        });
+
+        function executeSearch(query) {
+            closeSearchOverlay();
+            if (query.length > 0) {
+                const url = new URL(window.location);
+                url.searchParams.set("search", query);
+                window.history.pushState({}, '', url);
+                
+                showSearchSummary(query);
+                applySortingFiltering();
+            }
+        }
+
+        function showSearchSummary(term) {
+            const mainContent = document.querySelector(".shop-main-content");
+            const productGrid = document.getElementById("productGrid");
+            
+            const existing = document.querySelector(".search-summary-banner");
+            if (existing) existing.remove();
+
+            if (!term) return;
+
+            const banner = document.createElement("div");
+            banner.className = "search-summary-banner";
+            banner.innerHTML = `
+                <div class="search-summary-text">
+                    Search results for: <span>"${escapeHTML(term)}"</span>
+                </div>
+                <button class="clear-search-btn" id="clearSearchBtn">
+                    <i class="fa-solid fa-xmark"></i> Clear Search
+                </button>
+            `;
+            
+            mainContent.insertBefore(banner, productGrid);
+
+            document.getElementById("clearSearchBtn").addEventListener("click", () => {
+                searchInput.value = "";
+                const url = new URL(window.location);
+                url.searchParams.delete("search");
+                window.history.pushState({}, '', url);
+                
+                banner.remove();
+                applySortingFiltering();
+            });
+        }
+
+        function escapeHTML(str) {
+            return str.replace(/[&<>'"]/g, 
+                tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+            );
+        }
+
+        // Parse search query from URL on load
+        const queryParams = new URLSearchParams(window.location.search);
+        const urlSearchQuery = queryParams.get("search");
+        if (urlSearchQuery) {
+            searchInput.value = urlSearchQuery;
+            showSearchSummary(urlSearchQuery);
+            applySortingFiltering();
+        }
+
+        // =============================================
+        // WISHLIST DYNAMIC INTERACTION LOGIC
+        // =============================================
+        const getWishlist = () => JSON.parse(localStorage.getItem("wishlist") || "[]");
+        const saveWishlist = (list) => localStorage.setItem("wishlist", JSON.stringify(list));
+
+        const updateWishlistBadges = () => {
+            const list = getWishlist();
+            const badge = document.getElementById("wishlistBadge");
+            if (badge) {
+                badge.textContent = list.length;
+            }
+        };
+
+        const toggleWishlist = (name, price, image, btn) => {
+            let list = getWishlist();
+            const index = list.findIndex(item => item.name === name);
+            const icon = btn.querySelector("i");
+
+            if (index > -1) {
+                // Remove from wishlist
+                list.splice(index, 1);
+                btn.classList.remove("active");
+                if (icon) {
+                    icon.className = "fa-regular fa-heart";
+                }
+            } else {
+                // Add to wishlist
+                list.push({ name, price, image });
+                btn.classList.add("active");
+                if (icon) {
+                    icon.className = "fa-solid fa-heart";
+                }
+            }
+
+            saveWishlist(list);
+            updateWishlistBadges();
+        };
+
+        // Initialize header badges
+        updateWishlistBadges();
+
+        // Dynamically inject wishlist heart icons on all product cards
+        const productCards = document.querySelectorAll(".product-card");
+        const list = getWishlist();
+
+        productCards.forEach(card => {
+            const imageContainer = card.querySelector(".product-image-container");
+            if (!imageContainer) return;
+
+            // Find image alt or title to use as product name
+            const img = imageContainer.querySelector("img");
+            if (!img) return;
+
+            // Use the descriptive img alt as the title to solve Wamp's duplicate title bug
+            const titleEl = card.querySelector(".product-title");
+            const rawTitle = titleEl ? titleEl.textContent.trim() : "";
+            const name = img.alt ? img.alt : rawTitle;
+
+            // Keep title text content accurate in product card as well to be clean
+            if (titleEl && img.alt) {
+                titleEl.textContent = img.alt;
+            }
+
+            // Extract price and clean it
+            const price = card.getAttribute("data-price") || "";
+            
+            // Extract image source
+            const image = img.getAttribute("src") || "";
+
+            // Check if already in wishlist
+            const isInWish = list.some(item => item.name === name);
+
+            // Get or create the button
+            let btn = imageContainer.querySelector(".wishlist-btn");
+            const isNew = !btn;
+            if (isNew) {
+                btn = document.createElement("button");
+                btn.className = "wishlist-btn";
+                btn.setAttribute("type", "button");
+            }
+
+            if (isInWish) {
+                btn.classList.add("active");
+                const icon = btn.querySelector("i");
+                if (icon) icon.className = "fa-solid fa-heart";
+            } else {
+                btn.classList.remove("active");
+                const icon = btn.querySelector("i");
+                if (icon) icon.className = "fa-regular fa-heart";
+            }
+
+            if (isNew) {
+                if (!btn.querySelector("i")) {
+                    btn.innerHTML = `<i class="${isInWish ? "fa-solid fa-heart" : "fa-regular fa-heart"}"></i>`;
+                }
+                imageContainer.appendChild(btn);
+            }
+            
+            // Add click listener
+            btn.onclick = (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                toggleWishlist(name, price, image, btn);
+            };
+        });
+    });
+</script>
+</body>
+</html>

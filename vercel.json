@@ -1,10 +1,6 @@
 {
   "version": 2,
-  "functions": {
-    "api/**/*.php": {
-      "runtime": "vercel-php@0.7.3"
-    }
-  },
+  "cleanUrls": true,
   "routes": [
     {
       "src": "/images/(.*)",
@@ -31,208 +27,144 @@
       "dest": "/frontend/uploads/$1"
     },
     {
-      "src": "/insert_cart.php",
-      "dest": "/api/insert_cart.php"
-    },
-    {
-      "src": "/remove_cart.php",
-      "dest": "/api/remove_cart.php"
-    },
-    {
-      "src": "/sync_cart.php",
-      "dest": "/api/sync_cart.php"
-    },
-    {
-      "src": "/update_cart_quantity.php",
-      "dest": "/api/update_cart_quantity.php"
-    },
-    {
-      "src": "/register_process.php",
-      "dest": "/api/register_process.php"
-    },
-    {
-      "src": "/logout.php",
-      "dest": "/api/logout.php"
-    },
-    {
-      "src": "/p1.php",
-      "dest": "/api/p1.php"
-    },
-    {
-      "src": "/p3.php",
-      "dest": "/api/p3.php"
-    },
-    {
-      "src": "/p4.php",
-      "dest": "/api/p4.php"
-    },
-    {
-      "src": "/p5.php",
-      "dest": "/api/p5.php"
-    },
-    {
       "src": "/about",
-      "dest": "/api/about.php"
+      "dest": "/frontend/about.html"
     },
     {
-      "src": "/about.php",
-      "dest": "/api/about.php"
-    },
-    {
-      "src": "/add-to-cart",
-      "dest": "/api/add_to_cart.php"
-    },
-    {
-      "src": "/add to cart.php",
-      "dest": "/api/add_to_cart.php"
-    },
-    {
-      "src": "/admin",
-      "dest": "/api/admin.php"
-    },
-    {
-      "src": "/admin.php",
-      "dest": "/api/admin.php"
-    },
-    {
-      "src": "/blog",
-      "dest": "/api/blog.php"
-    },
-    {
-      "src": "/blog.php",
-      "dest": "/api/blog.php"
-    },
-    {
-      "src": "/blog1",
-      "dest": "/api/blog1.php"
-    },
-    {
-      "src": "/blog1.php",
-      "dest": "/api/blog1.php"
-    },
-    {
-      "src": "/blog2",
-      "dest": "/api/blog2.php"
-    },
-    {
-      "src": "/blog2.php",
-      "dest": "/api/blog2.php"
-    },
-    {
-      "src": "/blog3",
-      "dest": "/api/blog3.php"
-    },
-    {
-      "src": "/blog3.php",
-      "dest": "/api/blog3.php"
-    },
-    {
-      "src": "/checkout",
-      "dest": "/api/checkout.php"
-    },
-    {
-      "src": "/checkout.php",
-      "dest": "/api/checkout.php"
-    },
-    {
-      "src": "/contact",
-      "dest": "/api/contact.php"
-    },
-    {
-      "src": "/contact.php",
-      "dest": "/api/contact.php"
-    },
-    {
-      "src": "/display_order",
-      "dest": "/api/display_order.php"
-    },
-    {
-      "src": "/display_order.php",
-      "dest": "/api/display_order.php"
-    },
-    {
-      "src": "/featured",
-      "dest": "/api/featured.php"
-    },
-    {
-      "src": "/featured.php",
-      "dest": "/api/featured.php"
-    },
-    {
-      "src": "/home",
-      "dest": "/api/home.php"
-    },
-    {
-      "src": "/home.php",
-      "dest": "/api/home.php"
-    },
-    {
-      "src": "/login",
-      "dest": "/api/login.php"
-    },
-    {
-      "src": "/login.php",
-      "dest": "/api/login.php"
-    },
-    {
-      "src": "/product",
-      "dest": "/api/product.php"
-    },
-    {
-      "src": "/product.php",
-      "dest": "/api/product.php"
-    },
-    {
-      "src": "/product-detail",
-      "dest": "/api/product_detail.php"
-    },
-    {
-      "src": "/product detail.php",
-      "dest": "/api/product_detail.php"
-    },
-    {
-      "src": "/profile",
-      "dest": "/api/profile.php"
-    },
-    {
-      "src": "/profile.php",
-      "dest": "/api/profile.php"
-    },
-    {
-      "src": "/register",
-      "dest": "/api/register.php"
-    },
-    {
-      "src": "/register.php",
-      "dest": "/api/register.php"
+      "src": "/about.html",
+      "dest": "/frontend/about.html"
     },
     {
       "src": "/shop",
-      "dest": "/api/shop.php"
+      "dest": "/frontend/shop.html"
     },
     {
-      "src": "/shop.php",
-      "dest": "/api/shop.php"
+      "src": "/shop.html",
+      "dest": "/frontend/shop.html"
     },
     {
-      "src": "/view_orders",
-      "dest": "/api/view_orders.php"
+      "src": "/product",
+      "dest": "/frontend/product.html"
     },
     {
-      "src": "/view_orders..php",
-      "dest": "/api/view_orders.php"
+      "src": "/product.html",
+      "dest": "/frontend/product.html"
+    },
+    {
+      "src": "/product-detail",
+      "dest": "/frontend/product-detail.html"
+    },
+    {
+      "src": "/product detail.html",
+      "dest": "/frontend/product-detail.html"
+    },
+    {
+      "src": "/contact",
+      "dest": "/frontend/contact.html"
+    },
+    {
+      "src": "/contact.html",
+      "dest": "/frontend/contact.html"
     },
     {
       "src": "/wishlist",
-      "dest": "/api/wishlist.php"
+      "dest": "/frontend/wishlist.html"
     },
     {
-      "src": "/wishlist.php",
-      "dest": "/api/wishlist.php"
+      "src": "/wishlist.html",
+      "dest": "/frontend/wishlist.html"
+    },
+    {
+      "src": "/cart",
+      "dest": "/frontend/cart.html"
+    },
+    {
+      "src": "/add to cart.html",
+      "dest": "/frontend/cart.html"
+    },
+    {
+      "src": "/login",
+      "dest": "/frontend/login.html"
+    },
+    {
+      "src": "/login.html",
+      "dest": "/frontend/login.html"
+    },
+    {
+      "src": "/register",
+      "dest": "/frontend/register.html"
+    },
+    {
+      "src": "/register.html",
+      "dest": "/frontend/register.html"
+    },
+    {
+      "src": "/profile",
+      "dest": "/frontend/profile.html"
+    },
+    {
+      "src": "/profile.html",
+      "dest": "/frontend/profile.html"
+    },
+    {
+      "src": "/checkout",
+      "dest": "/frontend/checkout.html"
+    },
+    {
+      "src": "/checkout.html",
+      "dest": "/frontend/checkout.html"
+    },
+    {
+      "src": "/view-orders",
+      "dest": "/frontend/view-orders.html"
+    },
+    {
+      "src": "/view_orders.html",
+      "dest": "/frontend/view-orders.html"
+    },
+    {
+      "src": "/blog",
+      "dest": "/frontend/blog.html"
+    },
+    {
+      "src": "/blog.html",
+      "dest": "/frontend/blog.html"
+    },
+    {
+      "src": "/blog1",
+      "dest": "/frontend/blog1.html"
+    },
+    {
+      "src": "/blog1.html",
+      "dest": "/frontend/blog1.html"
+    },
+    {
+      "src": "/blog2",
+      "dest": "/frontend/blog2.html"
+    },
+    {
+      "src": "/blog2.html",
+      "dest": "/frontend/blog2.html"
+    },
+    {
+      "src": "/blog3",
+      "dest": "/frontend/blog3.html"
+    },
+    {
+      "src": "/blog3.html",
+      "dest": "/frontend/blog3.html"
+    },
+    {
+      "src": "/featured",
+      "dest": "/frontend/featured.html"
+    },
+    {
+      "src": "/featured.html",
+      "dest": "/frontend/featured.html"
     },
     {
       "src": "/",
-      "dest": "/api/home.php"
+      "dest": "/frontend/home.html"
     }
   ]
 }

@@ -1,0 +1,577 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout-My Store</title>   
+    <!-- font awesome -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #1a73e8;
+            --border-color: #d1d1d1;
+            --text-color: #333;
+            --bg-gray: #fafafa;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #fff;
+            color: var(--text-color);
+        }
+
+        header {
+            width: 100%;
+            background: white;
+            padding: 15px 40px;
+            border-bottom: 1px solid #eee;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 600;
+            color: #000;
+            text-decoration: none;
+        }
+
+        .cart-icon {
+            font-size: 22px;
+            color: var(--primary-color);
+            cursor: pointer;
+        }
+
+        .checkout-container {
+            display: flex;
+            min-height: calc(100vh - 60px);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .left-section {
+            flex: 1.2;
+            padding: 40px 60px 40px 0;
+            border-right: 1px solid #eee;
+        }
+
+        .right-section {
+            flex: 0.8;
+            background-color: var(--bg-gray);
+            padding: 8px 5px 47px 11px;
+        }
+
+        section {
+            margin-bottom: 35px;
+        }
+
+        h2 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 14px;
+            color: #333;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1);
+        }
+
+        .row {
+            display: flex;
+            gap: 12px;
+        }
+
+        .row .form-group {
+            flex: 1;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        .checkbox-group input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        /* Order Summary Styles */
+        .order-summary {
+            max-width: 450px;
+        }
+
+        .product-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .product-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .product-image-wrapper {
+            position: relative;
+            width: 64px;
+            height: 64px;
+            background: #fff;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 4px;
+        }
+
+        .product-image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .quantity-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #666;
+            color: #fff;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .product-name {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .product-price {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .summary-divider {
+            height: 1px;
+            background: #ddd;
+            margin: 20px 0;
+        }
+
+        .summary-line {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .summary-line.total {
+            color: #000;
+            font-size: 20px;
+            font-weight: 600;
+            margin-top: 20px;
+        }
+
+        .total-currency {
+            font-size: 12px;
+            color: #666;
+            font-weight: normal;
+            margin-right: 5px;
+        }
+
+        .help-icon {
+            font-size: 14px;
+            color: #999;
+            margin-left: 5px;
+            cursor: help;
+        }
+
+        @media (max-width: 900px) {
+            .checkout-container {
+                flex-direction: column-reverse;
+            }
+
+            .left-section, .right-section {
+                padding: 30px 20px;
+                flex: none;
+                width: 100%;
+            }
+
+            .left-section {
+                border-right: none;
+            }
+
+            .order-summary {
+                max-width: 100%;
+            }
+        }
+    </style>
+
+    </style>
+
+    <!-- Supabase CDN & Configuration -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    </head>
+<body>
+    <header>
+        <div class="navbar">
+            <a href="home.html"><div class="logo">My Store</div></a>
+            <div class="cart-icon">
+                <i class="fa-solid fa-bag-shopping"></i>
+            </div>
+        </div>
+    </header>
+
+    <form id="checkoutForm" onsubmit="event.preventDefault();">
+    <div class="checkout-container">
+        <div class="left-section">
+            <section>
+                <h2>Contact</h2>
+                <div class="form-group">
+                    <input type="text" name="email_phone" placeholder="Email or mobile phone number" required>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="news">
+                    <label for="news">Email me with news and offers</label>
+                </div>
+            </section>
+
+            <section>
+                <h2>Delivery</h2>
+                <div class="form-group">
+                    <select name="country">
+                        <option>India</option>
+                        <option>USA</option>
+                        <option>Canada</option>
+                        <option>UK</option>
+                    </select>
+                </div>
+
+                <div class="row">
+                    <div class="form-group">
+                        <input type="text" name="first_name" placeholder="First name (optional)">
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="last_name" placeholder="Last name" required>
+                    </div>
+                </div>
+
+                <div class="form-group" style="position: relative;">
+                    <input type="text" name="address" placeholder="Address" required>
+                    <i class="fa-solid fa-magnifying-glass" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #666;"></i>
+                </div>
+
+                <div class="form-group">
+                    <input type="text" name="apartment" placeholder="Apartment, suite, etc. (optional)">
+                </div>
+
+                <div class="row">
+                    <div class="form-group">
+                        <input type="text" name="city" placeholder="City" required>
+                    </div>
+                    <div class="form-group">
+                        <select name="state">
+                            <option>Gujarat</option>
+                            <option>Maharashtra</option>
+                            <option>Delhi</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="pincode" placeholder="PIN code" required>
+                    </div>
+                </div>
+
+                <div class="checkbox-group">
+    </head>
+<body>
+    <header>
+        <div class="navbar">
+            <a href="home.html"><div class="logo">My Store</div></a>
+            <div class="cart-icon">
+                <i class="fa-solid fa-bag-shopping"></i>
+            </div>
+        </div>
+    </header>
+
+    <form id="checkoutForm" onsubmit="event.preventDefault();">
+    <div class="checkout-container">
+        <div class="left-section">
+            <section>
+                <h2>Contact</h2>
+                <div class="form-group">
+                    <input type="text" name="email_phone" placeholder="Email or mobile phone number" required>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="news">
+                    <label for="news">Email me with news and offers</label>
+                </div>
+            </section>
+
+            <section>
+                <h2>Delivery</h2>
+                <div class="form-group">
+                    <select name="country">
+                        <option>India</option>
+                        <option>USA</option>
+                        <option>Canada</option>
+                        <option>UK</option>
+                    </select>
+                </div>
+
+                <div class="row">
+                    <div class="form-group">
+                        <input type="text" name="first_name" placeholder="First name (optional)">
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="last_name" placeholder="Last name" required>
+                    </div>
+                </div>
+
+                <div class="form-group" style="position: relative;">
+                    <input type="text" name="address" placeholder="Address" required>
+                    <i class="fa-solid fa-magnifying-glass" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #666;"></i>
+                </div>
+
+                <div class="form-group">
+                    <input type="text" name="apartment" placeholder="Apartment, suite, etc. (optional)">
+                </div>
+
+                <div class="row">
+                    <div class="form-group">
+                        <input type="text" name="city" placeholder="City" required>
+                    </div>
+                    <div class="form-group">
+                        <select name="state">
+                            <option>Gujarat</option>
+                            <option>Maharashtra</option>
+                            <option>Delhi</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="pincode" placeholder="PIN code" required>
+                    </div>
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="save-info">
+                    <label for="save-info">Save this information for next time</label>
+                </div>
+            </section>
+
+            <section>
+                <h2>Payment Method</h2>
+                <div class="payment-method" style="display: flex; gap: 15px; margin-top: 15px;">
+                    <label style="display: flex; align-items: center; gap: 8px; padding: 12px 20px; border: 1px solid #ddd; border-radius: 6px; cursor: pointer;">
+                        <input type="radio" name="payment_method" value="COD" checked> Cash on Delivery
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 8px; padding: 12px 20px; border: 1px solid #ddd; border-radius: 6px; cursor: pointer;">
+                        <input type="radio" name="payment_method" value="Card"> Credit/Debit card
+                    </label>
+                </div>
+            </section>
+
+            <button type="submit" name="place_order" class="place-order-btn" style="width: 100%; padding: 16px; background: #000; color: #fff; border: none; border-radius: 6px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 20px;">
+                Complete order
+            </button>
+        </div>
+
+        <div class="right-section">
+            <div class="order-summary">
+                <div class="order-summary-items" id="orderSummaryItems">
+                    <!-- Dynamically populated from cart -->
+                </div>
+
+                <div class="summary-divider"></div>
+
+                <div class="summary-line">
+                    <span>Subtotal</span>
+                    <span id="summarySubtotal">₹0.00</span>
+                </div>
+                <div class="summary-line">
+                    <span>Shipping</span>
+                    <span id="summaryShipping">Free</span>
+                </div>
+                <div class="summary-line">
+                    <span>Estimated taxes (18% GST) <i class="fa-solid fa-circle-question help-icon"></i></span>
+                    <span id="summaryTaxes">₹0.00</span>
+                </div>
+
+                <div class="summary-line total">
+                    <span>Total</span>
+                    <span><span class="total-currency">INR</span> <span id="summaryTotal">₹0.00</span></span>            
+                </div>
+            </div>
+        </div>
+    </div>
+    </form>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const cart = Cart.get();
+            const summaryItems = document.getElementById('orderSummaryItems');
+            const summarySubtotal = document.getElementById('summarySubtotal');
+            const summaryTaxes = document.getElementById('summaryTaxes');
+            const summaryTotal = document.getElementById('summaryTotal');
+            const form = document.getElementById('checkoutForm');
+            
+            if (cart.length === 0) {
+                alert('Your cart is empty! Redirecting to shop.');
+                window.location.href = 'shop.html';
+                return;
+            }
+
+            // Populate summary items and calculate subtotal
+            let subtotal = 0;
+            summaryItems.innerHTML = '';
+            
+            cart.forEach(item => {
+                const itemTotal = Number(item.price) * parseInt(item.quantity);
+                subtotal += itemTotal;
+
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'product-item';
+                itemDiv.innerHTML = `
+                    <div class="product-info">
+                        <div class="product-image-wrapper">
+                            <img src="${item.image}" alt="${item.name}" onerror="this.src='images/1.jpg';">
+                            <span class="quantity-badge">${item.quantity}</span>
+                        </div>
+                        <span class="product-name">${item.name}</span>
+                    </div>
+                    <span class="product-price">₹${Number(itemTotal).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                `;
+                summaryItems.appendChild(itemDiv);
+            });
+
+            const taxes = subtotal * 0.18; // 18% GST
+            const total = subtotal + taxes;
+
+            summarySubtotal.textContent = '₹' + Number(subtotal).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            summaryTaxes.textContent = '₹' + Number(taxes).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            summaryTotal.textContent = '₹' + Number(total).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+            // Attempt to pre-fill profile data if logged in
+            let userId = null;
+            if (supabaseClient) {
+                try {
+                    const { data: { user } } = await supabaseClient.auth.getUser();
+                    if (user) {
+                        userId = user.id;
+                        // Pre-fill email/phone input
+                        const emailInput = form.querySelector('input[name="email_phone"]');
+                        if (emailInput) emailInput.value = user.email || '';
+
+                        // Fetch details from profiles table
+                        const { data: profile } = await supabaseClient
+                            .from('profiles')
+                            .select('*')
+                            .eq('id', user.id)
+                            .single();
+                        
+                        if (profile) {
+                            if (form.querySelector('input[name="first_name"]')) {
+                                form.querySelector('input[name="first_name"]').value = profile.first_name || '';
+                            }
+                            if (form.querySelector('input[name="last_name"]')) {
+                                form.querySelector('input[name="last_name"]').value = profile.last_name || '';
+                            }
+                        }
+                    }
+                } catch (e) {
+                    console.error("Error pre-filling checkout profile", e);
+                }
+            }
+
+            // Form Submit to Supabase
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const emailPhone = form.querySelector('input[name="email_phone"]').value;
+                const country = form.querySelector('select[name="country"]').value;
+                const firstName = form.querySelector('input[name="first_name"]').value || '';
+                const lastName = form.querySelector('input[name="last_name"]').value;
+                const addressVal = form.querySelector('input[name="address"]').value;
+                const apartment = form.querySelector('input[name="apartment"]').value || '';
+                const city = form.querySelector('input[name="city"]').value;
+                const state = form.querySelector('select[name="state"]').value;
+                const pincode = form.querySelector('input[name="pincode"]').value;
+                
+                const paymentMethod = form.querySelector('input[name="payment_method"]:checked').value;
+                
+                const fullName = (firstName + ' ' + lastName).trim();
+                const fullAddress = `${addressVal}${apartment ? ', ' + apartment : ''}, ${city}, ${state} - ${pincode}, ${country}`;
+
+                if (!supabaseClient) {
+                    alert('Order simulated successfully! (Supabase credentials not set yet)');
+                    Cart.clear();
+                    window.location.href = 'home.html';
+                    return;
+                }
+
+                // Place order
+                const { data, error } = await supabaseClient.from('orders').insert({
+                    user_id: userId,
+                    customer_name: fullName,
+                    customer_email: emailPhone.includes('@') ? emailPhone : 'guest@example.com',
+                    phone: !emailPhone.includes('@') ? emailPhone : '',
+                    address: fullAddress,
+                    payment_method: paymentMethod,
+                    total_amount: total,
+                    items: cart
+                });
+
+                if (error) {
+                    alert('Failed to place order: ' + error.message);
+                    return;
+                }
+
+                alert('Thank you! Your order has been placed successfully.');
+                Cart.clear();
+                window.location.href = 'home.html';
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,927 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Wishlist - Sistaraja Jewelry</title>
+     <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+         *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body{
+            margin:0px;
+            background:white;
+            min-height: 95px;
+        }
+
+        header{
+            width:100%;
+            height: 100px;
+            background:#f5f1f1;
+            padding:20px 60px;
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+        }
+
+        /* Logo */
+        .logo img{
+            width:100px;
+        }
+
+        /* Menu */
+        nav ul{
+            display:flex;
+            list-style:none;
+            gap:35px;
+        }
+
+        nav ul li a{
+            text-decoration:none;
+            color:#9b4d5d;
+            font-size:14px;
+            transition:0.3s;
+        }
+
+        nav ul li a:hover{
+            color:#000;
+        }
+
+        /* Icons */
+        .icons{
+            display:flex;
+            gap:18px;
+            align-items: center;
+        }
+
+        .icons i{
+            color:#9b4d5d;
+            cursor:pointer;
+            font-size:15px;
+            transition:0.3s;
+        }
+
+        .icons i:hover{
+            color:#000;
+        }
+
+        /* banner */
+        .banner{
+            width:100%;
+            height:180px;
+            background-image:url('images/6.png'); /* add your image */
+            background-size:cover;
+            background-position:center;
+            position:relative;
+        }
+
+        .banner h2{
+            position:absolute;
+            top:40px;
+            left:90px;
+            color:#9b5c5c;
+            font-size:32px;
+            font-family:Georgia, serif;
+            font-weight:normal;
+        }
+
+        /* Content Area */
+        .wishlist-container {
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 0 20px;
+            min-height: 350px;
+        }
+
+        .wishlist-title-header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #9b4d5d;
+            font-family: Georgia, serif;
+            font-size: 32px;
+            font-weight: normal;
+        }
+
+        /* Product Cards Grid */
+        .product-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+        }
+
+        .product-card {
+            width: 280px;
+            background: #ffffff;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .product-image-container {
+            height: 260px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fcfcfc;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-image-container img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            transition: 0.6s ease;
+        }
+
+        .product-card:hover .product-image-container img {
+            transform: scale(1.08);
+        }
+
+        .product-details {
+            background: #954D59;
+            color: white;
+            padding: 25px 20px;
+            text-align: center;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .product-title {
+            font-size: 17px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: white;
+            line-height: 1.4;
+            min-height: 48px;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            overflow: hidden;
+        }
+
+        .product-price {
+            display: flex;
+            justify-content: center;
+            align-items: baseline;
+            gap: 10px;
+            margin-bottom: 20px;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .add-to-cart-btn {
+            background-color: white;
+            color: #954D59;
+            border: none;
+            width: 100%;
+            padding: 12px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .add-to-cart-btn:hover {
+            background-color: #f7ca00;
+            color: black;
+        }
+
+        /* Wishlist Heart overlays & badges */
+        .header-wishlist-link {
+            position: relative;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .wishlist-badge {
+            position: absolute;
+            top: -7px;
+            right: -7px;
+            background-color: #9b4d5d;
+            color: #ffffff;
+            font-size: 10px;
+            font-weight: 700;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #ffffff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .remove-wishlist-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 36px;
+            height: 36px;
+            background: #ffffff;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+            z-index: 10;
+        }
+
+        .remove-wishlist-btn i {
+            color: #e03a3a;
+            font-size: 16px;
+            transition: transform 0.2s ease;
+        }
+
+        .remove-wishlist-btn:hover {
+            transform: scale(1.1);
+            background: #fff0f0;
+            box-shadow: 0 6px 15px rgba(224, 58, 58, 0.15);
+        }
+
+        .remove-wishlist-btn:active i {
+            transform: scale(0.8);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: #faf7f7;
+            border-radius: 15px;
+            border: 1px dashed #d8b5b5;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .empty-state i {
+            font-size: 64px;
+            color: #d8b5b5;
+            margin-bottom: 20px;
+        }
+
+        .empty-state h3 {
+            color: #9b4d5d;
+            font-size: 22px;
+            margin-bottom: 12px;
+            font-family: Georgia, serif;
+        }
+
+        .empty-state p {
+            color: #666;
+            font-size: 15px;
+            margin-bottom: 30px;
+        }
+
+        .continue-btn {
+            display: inline-block;
+            background-color: #9b4d5d;
+            color: white;
+            text-decoration: none;
+            padding: 12px 35px;
+            border-radius: 50px;
+            font-size: 15px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .continue-btn:hover {
+            background-color: #000000;
+        }
+
+        /* =============================================
+           SEARCH OVERLAY & LIVE RESULTS CSS
+           ============================================= */
+        .search-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(4px);
+            z-index: 998;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .search-backdrop.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .search-overlay {
+            position: fixed;
+            top: -120px;
+            left: 0;
+            width: 100%;
+            height: 90px;
+            background: #ffffff;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            padding: 0 40px;
+        }
+
+        .search-overlay.active {
+            top: 0;
+        }
+
+        .search-container {
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            align-items: center;
+            position: relative;
+            gap: 15px;
+        }
+
+        .search-input-wrapper {
+            flex: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-input-wrapper i.search-icon-inside {
+            position: absolute;
+            left: 20px;
+            color: #9b4d5d;
+            font-size: 18px;
+        }
+
+        .search-input-wrapper input {
+            width: 100%;
+            padding: 14px 50px 14px 55px;
+            border: 2px solid #e8dede;
+            border-radius: 50px;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s ease;
+            background-color: #fcfcfc;
+            color: #333;
+        }
+
+        .search-input-wrapper input:focus {
+            border-color: #9b4d5d;
+            background-color: #ffffff;
+            box-shadow: 0 0 10px rgba(155, 77, 93, 0.15);
+        }
+
+        .search-input-wrapper .close-search-btn {
+            position: absolute;
+            right: 20px;
+            color: #9b4d5d;
+            cursor: pointer;
+            font-size: 18px;
+            transition: color 0.2s;
+        }
+
+        .search-input-wrapper .close-search-btn:hover {
+            color: #000000;
+        }
+
+        .search-results-dropdown {
+            position: absolute;
+            top: 105%;
+            left: 0;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            border: 1px solid #e8dede;
+            max-height: 400px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+            padding: 8px 0;
+        }
+
+        .search-results-dropdown.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .search-result-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            gap: 15px;
+            text-decoration: none;
+            color: #333;
+            transition: background-color 0.2s ease;
+            border-bottom: 1px solid #f9f6f6;
+        }
+
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+
+        .search-result-item:hover {
+            background-color: #fdfafb;
+        }
+
+        .search-result-item img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 1px solid #e8dede;
+        }
+
+        .search-result-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .search-result-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #9b4d5d;
+            margin-bottom: 4px;
+        }
+
+        .search-result-price {
+            font-size: 14px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .search-result-no-results {
+            padding: 20px;
+            text-align: center;
+            color: #888;
+            font-size: 15px;
+        }
+
+        @media screen and (max-width: 768px) {
+            .search-overlay {
+                height: 80px;
+                padding: 0 15px;
+            }
+            .search-input-wrapper input {
+                padding: 12px 45px 12px 45px;
+                font-size: 14px;
+            }
+            .search-input-wrapper i.search-icon-inside {
+                left: 15px;
+                font-size: 16px;
+            }
+            .search-input-wrapper .close-search-btn {
+                right: 15px;
+                font-size: 16px;
+            }
+        }
+
+         /* footer CSS */
+        footer {
+            background-color:#F5F1F0;
+            color: #954D59;
+            padding: 50px 20px;
+            margin-top: 50px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        footer .container {
+            max-width: 100%;
+            margin: 0 auto;
+        }
+        footer .row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            justify-content: space-between;
+        }
+        footer .col-md-4 {
+            flex: 1;
+            min-width: 250px;
+        }
+        footer h3 {
+           color: #954D59;
+            margin-bottom: 25px;
+            font-size: 22px;
+            font-weight: 500;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        footer h3::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 50px;
+            height: 2px;
+            background-color: #f7ca00;
+        }
+        footer ul {
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+        footer li {
+            margin-bottom: 12px;
+        }
+        footer a {
+            color: #954D59;
+            text-decoration: none;
+            transition: color 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        footer a:hover {
+            color: #f78000e3;
+        }
+        footer p {
+            color: #954D59;
+            line-height: 1.6;
+            margin: 8px 0;
+        }
+       footer .line{
+            width: 100%;
+            height: 2px;
+            background-color: #d8b5b5; /* line color */
+            margin-top: 20px;
+        }
+        /* Social Icons */
+        .social-icons a{
+            color:#9b6b6b;
+            margin-right:15px;
+            font-size:18px;
+            transition:0.3s;
+            text-decoration:none;
+        }
+
+        .social-icons a:hover{
+            color:#000;
+        }
+
+        /* Center Text */
+        .footer-text{
+            color:#9b6b6b;
+            font-size:14px;
+            text-align:center;
+        }
+
+        .footer-text a{
+            color:#9b6b6b;
+            text-decoration:none;
+            margin:0 8px;
+        }
+
+        .footer-text a:hover{
+            text-decoration:underline;
+        }
+
+        /* Payment Icons */
+        .payment-icons img{
+            width:45px;
+            margin-left:10px;
+        }
+    </style>
+
+    <!-- Supabase CDN & Configuration -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    </head>
+<body>
+
+<!-- Search Overlay Components -->
+<div class="search-backdrop" id="searchBackdrop"></div>
+<div class="search-overlay" id="searchOverlay">
+    <div class="search-container">
+        <div class="search-input-wrapper">
+            <i class="fa-solid fa-magnifying-glass search-icon-inside"></i>
+            <input type="text" id="searchInput" placeholder="Search for products (ring, bangle, earrings, necklace)..." autocomplete="off">
+            <i class="fa-solid fa-xmark close-search-btn" id="closeSearch"></i>
+        </div>
+        <div class="search-results-dropdown" id="searchResultsDropdown"></div>
+    </div>
+</div>
+
+<header>
+    <!-- Logo -->
+    <div class="logo">
+        <a href="home.html"><img src="images/1.jpg" alt="Logo"></a>
+    </div>
+
+    <!-- Menu -->
+    <nav>
+        <ul>
+            <li><a href="home.html"><b>Home</b></a></li>
+            <li><a href="product.html">Product</a></li>
+            <li><a href="shop.html">Shop</a></li>
+            <li><a href="blog.html">Blog</a></li>
+            <li><a href="featured.html">Featured</a></li>
+        </ul>
+    </nav>
+
+    <!-- Icons -->
+    <div class="icons">
+        <i class="fa-solid fa-magnifying-glass" id="searchIconBtn"></i>
+        <a href="login.html"><i class="fa-regular fa-user"></i></a>
+        <a href="wishlist.html" class="header-wishlist-link">
+            <i class="fa-solid fa-heart" id="wishlistIcon" style="color:#9b4d5d;"></i>
+            <span class="wishlist-badge" id="wishlistBadge">0</span>
+        </a>
+        <a href="cart.html"><i class="fa-solid fa-bag-shopping"></i></a>
+    </div>
+</header>
+
+<!-- banner -->
+<div class="banner">
+   <h2>My Wishlist</h2>
+</div>
+
+<!-- Wishlist Content -->
+<div class="wishlist-container">
+    <h2 class="wishlist-title-header">Your Wishlisted Treasures</h2>
+    <div class="product-grid" id="wishlistGrid">
+        <!-- Content will be injected dynamically -->
+    </div>
+</div>
+
+<!-- footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <img src="images/1.jpg" alt="Logo" style="width: 200px; height: 200px; border-radius: 100%;">
+            </div>
+            <div class="col-md-4">
+                <h3>Quick links</h3>
+                <p><i style="width: 20px;"></i><a href="#">Shipping policy</a></p>
+                <p><i style="width: 20px;"></i><a href="#">Return and Refund</a></p>
+                <p><i style="width: 20px;"></i><a href="#">Terms of Service</a></p>
+                <p><i style="width: 20px;"></i><a href="#">Privacy Policy</a></p>
+                <p><i style="width: 20px;"></i><a href="about.html">About Us</a></p>
+            </div>
+            <div class="col-md-4">
+                <a href="contact.html"><h3>Contact Us</h3></a>
+                <div class="social-icons">
+                    <p><i style="width: 20px;"></i><a>+(91)9876-543-210</a></p>
+                    <p><i style="width: 20px;"></i><a>sistarajewelry@gmail.com</a></p>
+                </div>
+            </div>
+            <div class="line"> </div>
+            <!-- Social Icons -->
+            <div class="social-icons">
+                <a href="https://www.instagram.com/"><i class="fa-brands fa-instagram"></i></a>
+                <a href="https://www.facebook.com/"><i class="fa-brands fa-facebook"></i></a>
+                <a href="https://www.twitter.com/"><i class="fa-brands fa-x-twitter"></i></a>
+                <a href="https://www.whatsapp.com/"><i class="fa-brands fa-whatsapp"></i></a>
+            </div>
+
+            <!-- Footer Text -->
+            <div class="footer-text">
+                © 2025, Sistaraja Jewelry Powered by Shopify
+                &nbsp; • &nbsp;
+                <a href="#">Refund Policy</a>
+                •
+                <a href="#">Privacy Policy</a>
+                •
+                <a href="#">Terms of Service</a>
+            </div>
+
+            <!-- Payment Icons -->
+            <div class="payment-icons">
+                <img src="images/5.jpg" alt="Visa">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal">
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        // =============================================
+        // SEARCH INTERACTION & SUGGESTIONS LOGIC
+        // =============================================
+        const searchIconBtn = document.getElementById("searchIconBtn");
+        const searchOverlay = document.getElementById("searchOverlay");
+        const searchBackdrop = document.getElementById("searchBackdrop");
+        const closeSearch = document.getElementById("closeSearch");
+        const searchInput = document.getElementById("searchInput");
+        const searchResultsDropdown = document.getElementById("searchResultsDropdown");
+
+        const productsList = [
+            { name: "Gold Plated Diamond Ring", price: "₹1,499", image: "images/10.jpg", category: "rings" },
+            { name: "Classic Gold Bangle", price: "₹2,499", image: "images/10.jpg", category: "bracelets" },
+            { name: "Diamond Stud Earrings", price: "₹3,999", image: "images/10.jpg", category: "earrings" },
+            { name: "Luxury Pearl Necklace", price: "₹5,299", image: "images/10.jpg", category: "necklaces" },
+            { name: "Elegant Gold Earrings", price: "₹1,299", image: "images/10.jpg", category: "earrings" },
+            { name: "Silver Diamond Ring", price: "₹899", image: "images/10.jpg", category: "rings" },
+            { name: "Charming Pearl Bracelet", price: "₹599", image: "images/10.jpg", category: "bracelets" },
+            { name: "Vintage Gold Necklace", price: "₹2,999", image: "images/10.jpg", category: "necklaces" }
+        ];
+
+        const openSearchOverlay = () => {
+            searchOverlay.classList.add("active");
+            searchBackdrop.classList.add("active");
+            setTimeout(() => searchInput.focus(), 100);
+            document.body.style.overflow = "hidden";
+        };
+
+        const closeSearchOverlay = () => {
+            searchOverlay.classList.remove("active");
+            searchBackdrop.classList.remove("active");
+            searchResultsDropdown.classList.remove("active");
+            searchInput.value = "";
+            document.body.style.overflow = "";
+        };
+
+        if (searchIconBtn) searchIconBtn.addEventListener("click", openSearchOverlay);
+        if (closeSearch) closeSearch.addEventListener("click", closeSearchOverlay);
+        if (searchBackdrop) searchBackdrop.addEventListener("click", closeSearchOverlay);
+
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape" && searchOverlay.classList.contains("active")) {
+                closeSearchOverlay();
+            }
+        });
+
+        searchInput.addEventListener("input", () => {
+            const query = searchInput.value.trim().toLowerCase();
+            if (query.length < 1) {
+                searchResultsDropdown.classList.remove("active");
+                searchResultsDropdown.innerHTML = "";
+                return;
+            }
+
+            const matches = productsList.filter(p => 
+                p.name.toLowerCase().includes(query) || 
+                p.category.toLowerCase().includes(query)
+            );
+
+            searchResultsDropdown.innerHTML = "";
+            if (matches.length > 0) {
+                matches.forEach(item => {
+                    const a = document.createElement("a");
+                    a.href = `product-detail.html?name=${encodeURIComponent(item.name)}`;
+                    a.className = "search-result-item";
+                    a.innerHTML = `
+                        <img src="${item.image}" alt="${item.name}">
+                        <div class="search-result-info">
+                            <span class="search-result-title">${item.name}</span>
+                            <span class="search-result-price">${item.price}</span>
+                        </div>
+                    `;
+                    searchResultsDropdown.appendChild(a);
+                });
+            } else {
+                const div = document.createElement("div");
+                div.className = "search-result-no-results";
+                div.textContent = `No products found for "${searchInput.value}"`;
+                searchResultsDropdown.appendChild(div);
+            }
+            searchResultsDropdown.classList.add("active");
+        });
+
+        const innerSearchIcon = searchOverlay.querySelector(".search-icon-inside");
+        if (innerSearchIcon) {
+            innerSearchIcon.style.cursor = "pointer";
+            innerSearchIcon.addEventListener("click", () => {
+                const query = searchInput.value.trim();
+                if (query.length > 0) {
+                    window.location.href = `product.php?search=${encodeURIComponent(query)}`;
+                }
+            });
+        }
+
+        searchInput.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") {
+                const query = searchInput.value.trim();
+                if (query.length > 0) {
+                    window.location.href = `product.php?search=${encodeURIComponent(query)}`;
+                }
+            }
+        });
+
+        // =============================================
+        // WISHLIST INTERACTIVE RENDERING
+        // =============================================
+        const getWishlist = () => JSON.parse(localStorage.getItem("wishlist") || "[]");
+        const saveWishlist = (list) => localStorage.setItem("wishlist", JSON.stringify(list));
+
+        const updateWishlistBadges = () => {
+            const list = getWishlist();
+            const badge = document.getElementById("wishlistBadge");
+            if (badge) {
+                badge.textContent = list.length;
+            }
+        };
+
+        const renderWishlist = () => {
+            const list = getWishlist();
+            const grid = document.getElementById("wishlistGrid");
+            if (!grid) return;
+
+            grid.innerHTML = "";
+
+            if (list.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fa-regular fa-heart"></i>
+                        <h3>Your Wishlist is Empty</h3>
+                        <p>Discover beautiful jewelry and keep track of your favorite pieces here.</p>
+                        <a href="product.html" class="continue-btn">Continue Shopping</a>
+                    </div>
+                `;
+                return;
+            }
+
+            list.forEach(item => {
+                const card = document.createElement("div");
+                card.className = "product-card";
+                card.innerHTML = `
+                    <button class="remove-wishlist-btn" title="Remove from Wishlist">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                    <div class="product-image-container">
+                        <a href="product-detail.html?name=${encodeURIComponent(item.name)}">
+                            <img src="${item.image}" alt="${item.name}">
+                        </a>
+                    </div>
+                    <div class="product-details">
+                        <h3 class="product-title">${item.name}</h3>
+                        <div class="product-price">
+                            <span class="currency">₹</span>
+                            <span class="current-price">${item.price}</span>
+                        </div>
+                        <form action="../api/cart.html" method="post">
+                            <input type="hidden" name="name" value="${item.name}">
+                            <input type="hidden" name="price" value="${item.price.replace(",", "")}">
+                            <input type="hidden" name="image" value="${item.image}">
+                            <button type="submit" name="add_to_cart" class="add-to-cart-btn">Add to Cart</button>
+                        </form>
+                    </div>
+                `;
+
+                // Add remove button event listener
+                const removeBtn = card.querySelector(".remove-wishlist-btn");
+                removeBtn.addEventListener("click", () => {
+                    // Visual fade-out transition
+                    card.style.opacity = "0";
+                    card.style.transform = "scale(0.9) translateY(10px)";
+                    card.style.transition = "all 0.4s ease";
+
+                    setTimeout(() => {
+                        let currentList = getWishlist();
+                        const index = currentList.findIndex(i => i.name === item.name);
+                        if (index > -1) {
+                            currentList.splice(index, 1);
+                            saveWishlist(currentList);
+                        }
+                        updateWishlistBadges();
+                        renderWishlist();
+                    }, 400);
+                });
+
+                grid.appendChild(card);
+            });
+        };
+
+        // Initialize Page
+        updateWishlistBadges();
+        renderWishlist();
+    });
+</script>
+</body>
+</html>

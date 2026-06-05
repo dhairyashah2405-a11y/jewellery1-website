@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistara - Add to Cart</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Slick Slider CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"/>
+
+    <!-- jQuery and Slick JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+
+    <!-- Supabase CDN & Configuration -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+
+    <style>
+     *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body{
+            margin:0px;
+            background:white;
+            min-height: 95px;
+        }
+
+        header{
+            width:100%;
+            height: 100px;
+            background:#f5f1f1;
+            padding:20px 60px;
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+        }
+
+        /* Logo */
+        .logo img{
+            width:100px;
+        }
+
+        /* Menu */
+        nav ul{
+            display:flex;
+            list-style:none;
+            gap:35px;
+        }
+
+        nav ul li a{
+            text-decoration:none;
+            color:#9b4d5d;
+            font-size:14px;
+            transition:0.3s;
+        }
+
+        nav ul li a:hover{
+            color:#000;
+        }
+
+        /* Icons */
+        .icons{
+            display:flex;
+            gap:18px;
+        }
+
+        .icons i{
+            color:#9b4d5d;
+            cursor:pointer;
+            font-size:15px;
+            transition:0.3s;
+        }
+
+        .icons i:hover{
+            color:#000;
+        }
+         /*banner*/
+          .banner{
+        width:100%;
+        height:180px;
+        background-image:url('images/6.png'); /* add your image */
+        background-size:cover;
+        background-position:center;
+        position:relative;
+    }
+
+    .banner h2{
+        position:absolute;
+        top:40px;
+        left:90px;
+        color:#9b5c5c;
+        font-size:32px;
+        font-family:Georgia, serif;
+        font-weight:normal;
+    }
+    /* subscribe */
+     .line{
+        width: 100%;
+        height: 2px;
+        background-color: #d8b5b5; /* line color */
+        margin-top: 20px;
+    }
+         /* footer CSS */
+        footer {
+            background-color:#F5F1F0;
+            color: #954D59;
+            padding: 50px 20px;
+            margin-top: 50px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        footer .container {
+            max-width: 100%;
+            margin: 0 auto;
+        }
+        footer .row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            justify-content: space-between;
+        }
+        footer .col-md-4 {
+            flex: 1;
+            min-width: 250px;
+        }
+        footer h3 {
+           color: #954D59;
+            margin-bottom: 25px;
+            font-size: 22px;
+            font-weight: 500;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        footer h3::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 50px;
+            height: 2px;
+            background-color: #f7ca00;
+        }
+        footer ul {
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+        footer li {
+            margin-bottom: 12px;
+        }
+        footer a {
+            color: #954D59;
+            text-decoration: none;
+            transition: color 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        footer a:hover {
+            color: #f78000e3;
+        }
+        footer p {
+            color: #954D59;
+            line-height: 1.6;
+            margin: 8px 0;
+        }
+       footer .line{
+        width: 100%;
+        height: 2px;
+        background-color: #d8b5b5; /* line color */
+        margin-top: 20px;
+    }
+    /* Social Icons */
+    .social-icons a{
+        color:#9b6b6b;
+        margin-right:15px;
+        font-size:18px;
+        transition:0.3s;
+        text-decoration:none;
+    }
+
+    .social-icons a:hover{
+        color:#000;
+    }
+
+    /* Center Text */
+    .footer-text{
+        color:#9b6b6b;
+        font-size:14px;
+        text-align:center;
+    }
+
+    .footer-text a{
+        color:#9b6b6b;
+        text-decoration:none;
+        margin:0 8px;
+    }
+
+    .footer-text a:hover{
+        text-decoration:underline;
+    }
+
+    /* Payment Icons */
+    .payment-icons img{
+        width:45px;
+        margin-left:10px;
+    }
+    .hamburger{
+        display:none;
+    }
+/* Button Group Styles */
+.btn-group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 1px solid #eee;
+}
+
+.btn-group a {
+    text-decoration: none;
+}
+
+.keep-shopping {
+    background: #fff;
+    color: #954D59;
+    border: 2px solid #954D59;
+    padding: 12px 30px;
+    font-weight: 600;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 15px;
+}
+
+.keep-shopping:hover {
+    background: #954D59;
+    color: #fff;
+}
+
+.checkout {
+    background: #954D59;
+    color: #fff;
+    border: none;
+    padding: 14px 45px;
+    font-weight: 600;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 16px;
+    box-shadow: 0 4px 12px rgba(149, 77, 89, 0.15);
+}
+
+.checkout:hover {
+    background: #7d3f4a;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(149, 77, 89, 0.25);
+}
+
+/* Cart Table Styles */
+.cart-page table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.cart-page th {
+    text-align: left;
+    padding: 15px;
+    background-color: #954D59;
+    color: white;
+    font-weight: 600;
+}
+
+.cart-page td {
+    padding: 20px 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.cart-info {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 20px;
+}
+
+.cart-info img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.cart-info div p {
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.cart-info div small {
+    color: #888;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.cart-info div a {
+    color: #ff523b;
+    font-size: 13px;
+    text-decoration: none;
+}
+
+.cart-page input {
+    width: 50px;
+    height: 35px;
+    padding: 5px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+.subtotal-td {
+    font-weight: 600;
+    color: #954D59;
+    font-size: 18px;
+}
+
+.total-price {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 30px;
+}
+
+.total-price table {
+    border-top: 3px solid #954D59;
+    width: 100%;
+    max-width: 400px;
+}
+
+.total-price td:last-child {
+    text-align: right;
+    font-weight: 700;
+    font-size: 20px;
+    color: #954D59;
+}
+
+.quantity-selector {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ddd;
+    height: 40px;
+    width: fit-content;
+}
+
+.quantity-selector button {
+    background: none;
+    border: none;
+    width: 35px;
+    height: 100%;
+    cursor: pointer;
+    font-size: 18px;
+    color: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.quantity-selector input {
+    width: 40px;
+    height: 100%;
+    border: none;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 500;
+    outline: none;
+    background: transparent;
+}
+
+    /* MOBILE VIEW */
+    @media screen and (max-width: 768px) {
+        header {
+            padding: 12px 18px;
+            height: auto;
+            position: relative;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .hamburger {
+            display: flex;
+            align-items: center;
+            font-size: 26px;
+            cursor: pointer;
+            color: #9b4d5d;
+            order: 1;
+            flex: 1;
+            justify-content: flex-start;
+        }
+        .logo {
+            order: 2;
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .logo img {
+            width: 70px;
+        }
+        .icons {
+            display: flex;
+            gap: 14px;
+            order: 3;
+            flex: 1;
+            justify-content: flex-end;
+            align-items: center;
+        }
+        .icons i {
+            font-size: 18px;
+        }
+        nav {
+            order: 4;
+            width: 100%;
+            flex-basis: 100%;
+        }
+        nav ul {
+            display: none;
+            flex-direction: column;
+            gap: 0;
+            background: #f5f1f1;
+            padding: 10px 0;
+            margin-top: 8px;
+            border-top: 1px solid #e0d0d4;
+        }
+        nav ul.show {
+            display: flex;
+        }
+        nav ul li {
+            border-bottom: 1px solid #e8dede;
+        }
+        nav ul li a {
+            display: block;
+            padding: 12px 20px;
+            font-size: 15px;
+            color: #9b4d5d;
+        }
+        .btn-group {
+            flex-direction: column-reverse;
+            gap: 15px;
+            padding-top: 20px;
+        }
+        .btn-group a, 
+        .checkout, 
+        .keep-shopping {
+            width: 100%;
+            text-align: center;
+        }
+    }
+    
+    /* User Dropdown wrapper styles */
+    .user-dropdown-wrap {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+    }
+    .user-dropdown-menu {
+        display: none;
+        position: absolute;
+        top: 30px;
+        right: 0;
+        background: #fff;
+        border: 1px solid #e0d0d4;
+        border-radius: 8px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+        min-width: 150px;
+        z-index: 999;
+        overflow: hidden;
+    }
+    .user-dropdown-menu a {
+        display: block;
+        padding: 11px 18px;
+        color: #9b4d5d;
+        text-decoration: none;
+        font-size: 14px;
+        transition: background 0.2s;
+    }
+    .user-dropdown-menu a:hover {
+        background: #f5f1f1;
+        color: #000;
+    }
+    .user-dropdown-wrap:hover .user-dropdown-menu,
+    .user-dropdown-wrap.open .user-dropdown-menu {
+        display: block;
+    }
+    
+    /* Wishlist and badge wrapper styles */
+    .header-wishlist-link {
+        position: relative;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+    }
+    .wishlist-badge {
+        position: absolute;
+        top: -7px;
+        right: -7px;
+        background-color: #9b4d5d;
+        color: #ffffff;
+        font-size: 10px;
+        font-weight: 700;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #ffffff;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    </style>
+</head>
+<body>   
+<header>
+    <!-- Logo -->
+    <div class="logo">
+        <a href="home.html"><img src="images/1.jpg" alt="Logo"></a>
+    </div>
+    <!-- hamburger icon -->
+    <div class="hamburger" onclick="toggleMenu()">
+        ☰
+    </div>
+
+    <!-- Menu -->
+    <nav>
+        <ul id="menu">
+            <li><a href="home.html"><b>Home</b></a></li>
+            <li><a href="product.html">Product</a></li>
+            <li><a href="shop.html">Shop</a></li>
+            <li><a href="blog.html">Blog</a></li>
+            <li><a href="featured.html">Featured</a></li>
+        </ul>
+    </nav>
+    <!-- Icons -->
+    <div class="icons">
+        <div class="user-dropdown-wrap" id="userDropdownWrap">
+            <i class="fa-regular fa-user" id="userIconBtn" style="cursor:pointer;"></i>
+            <div class="user-dropdown-menu" id="userDropdownMenu">
+                <!-- Loaded via checkGlobalAuth() -->
+            </div>
+        </div>
+        <a href="wishlist.html" class="header-wishlist-link">
+            <i class="fa-regular fa-heart" id="wishlistIcon"></i>
+            <span class="wishlist-badge" id="wishlistBadge">0</span>
+        </a>
+        <a href="cart.html"><i class="fa-solid fa-bag-shopping"></i></a>
+    </div>
+</header>
+
+<h1 style="text-align:center; margin-top:20px; margin-bottom:20px;">Your cart</h1>
+<div class="line"> </div>
+
+<div class="container" style="max-width: 1200px; margin: 0 auto; padding: 20px;">
+    <div class="cart-page">
+        <table id="cartTable">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody id="cartTableBody">
+                <!-- Dynamically populated -->
+            </tbody>
+        </table>
+        
+        <div class="total-price">
+            <table>
+                <tr>
+                    <td>Subtotal</td>
+                    <td id="cartSubtotal">₹0.00</td>
+                </tr>
+                <tr>
+                    <td>Shipping (Calculated at checkout)</td>
+                    <td>₹0.00</td>
+                </tr>
+                <tr>
+                    <td>Total</td>
+                    <td id="cartGrandTotal" style="font-weight:700;">₹0.00</td>
+                </tr>
+            </table>
+        </div>
+        
+        <div class="btn-group">
+            <a href="shop.html" class="keep-shopping">Keep Shopping</a>
+            <a href="checkout.html" class="checkout">Proceed to Checkout</a>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <img src="images/1.jpg" alt="Logo" style="width: 200px; height: 200px; border-radius: 100%;">
+            </div>
+            
+            <div class="col-md-4">
+                <h3>Quick links</h3>
+                <p><a href="#">Shipping policy</a></p>
+                <p><a href="#">Return and Refund</a></p>
+                <p><a href="#">Terms of Service</a></p>
+                <p><a href="#">Privacy Policy</a></p>
+                <p><a href="about.html">About Us</a></p>
+            </div>
+            
+            <div class="col-md-4">
+                <a href="contact.html"><h3>Contact Us</h3></a>
+                <div class="social-icons">
+                    <p><a>+(91)9876-543-210</a></p>
+                    <p><a>sistarajewelry@gmail.com</a></p>
+                </div>
+            </div>
+            
+            <div class="line"></div>
+            
+            <div class="social-icons" style="justify-content: center; width: 100%;">
+                <a href="https://www.instagram.com/"><i class="fa-brands fa-instagram"></i></a>
+                <a href="https://www.facebook.com/"><i class="fa-brands fa-facebook"></i></a>
+                <a href="https://www.twitter.com/"><i class="fa-brands fa-x-twitter"></i></a>
+                <a href="https://www.whatsapp.com/"><i class="fa-brands fa-whatsapp"></i></a>
+            </div>
+
+            <div class="footer-text">
+                © 2025, Sistaraja Jewelry Powered by Shopify
+                &nbsp; • &nbsp;
+                <a href="#">Refund Policy</a> •
+                <a href="#">Privacy Policy</a> •
+                <a href="#">Terms of Service</a>
+            </div>
+
+            <div class="payment-icons">
+                <img src="images/5.jpg" alt="Visa">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal">
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+    function toggleMenu() {
+        document.getElementById("menu").classList.toggle("show");
+    }
+
+    // Toggle dropdown
+    (function() {
+        const wrap = document.getElementById("userDropdownWrap");
+        const btn  = document.getElementById("userIconBtn");
+        if (wrap && btn) {
+            btn.addEventListener("click", function(e) {
+                e.stopPropagation();
+                wrap.classList.toggle("open");
+            });
+            document.addEventListener("click", function() {
+                wrap.classList.remove("open");
+            });
+        }
+    })();
+
+    // Wishlist sync badge
+    const getWishlist = () => JSON.parse(localStorage.getItem("wishlist") || "[]");
+    const updateWishlistBadge = () => {
+        const wl = getWishlist();
+        const badge = document.getElementById("wishlistBadge");
+        if (badge) badge.textContent = wl.length;
+    };
+    updateWishlistBadge();
+
+    // Render cart items from localStorage
+    function renderCartPage() {
+        const cart = Cart.get();
+        const tbody = document.getElementById('cartTableBody');
+        const subtotalText = document.getElementById('cartSubtotal');
+        const totalText = document.getElementById('cartGrandTotal');
+        const checkoutBtn = document.querySelector('.checkout');
+        
+        if (!tbody) return;
+        tbody.innerHTML = '';
+        
+        if (cart.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;padding:40px;color:#888;font-size:16px;">Your shopping cart is empty.</td></tr>';
+            subtotalText.textContent = '₹0.00';
+            totalText.textContent = '₹0.00';
+            if (checkoutBtn) {
+                checkoutBtn.style.opacity = '0.5';
+                checkoutBtn.style.pointerEvents = 'none';
+            }
+            return;
+        }
+
+        if (checkoutBtn) {
+            checkoutBtn.style.opacity = '1';
+            checkoutBtn.style.pointerEvents = 'auto';
+        }
+        
+        let total = 0;
+        cart.forEach((item, index) => {
+            const itemTotal = item.price * item.quantity;
+            total += itemTotal;
+            
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>
+                    <div class="cart-info">
+                        <img src="${item.image}" alt="${item.name}" onerror="this.src='images/1.jpg';">
+                        <div>
+                            <p>${item.name}</p>
+                            <small>Price: ₹${Number(item.price).toLocaleString('en-IN')}</small>
+                            <br>
+                            <a href="#" class="remove-btn-el" data-name="${item.name}">Remove</a>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="quantity-selector">
+                        <button class="qty-minus-btn" data-name="${item.name}" data-qty="${item.quantity}">&#8722;</button>
+                        <input type="text" value="${item.quantity}" readonly>
+                        <button class="qty-plus-btn" data-name="${item.name}" data-qty="${item.quantity}">&#43;</button>
+                    </div>
+                </td>
+                <td class="subtotal-td">₹${Number(itemTotal).toLocaleString('en-IN')}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+        
+        subtotalText.textContent = '₹' + Number(total).toLocaleString('en-IN');
+        totalText.textContent = '₹' + Number(total).toLocaleString('en-IN');
+
+        // Add event listeners dynamically to remove and qty update buttons
+        document.querySelectorAll('.remove-btn-el').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const name = btn.getAttribute('data-name');
+                if (confirm('Remove this item from cart?')) {
+                    Cart.remove(name);
+                    renderCartPage();
+                }
+            });
+        });
+
+        document.querySelectorAll('.qty-minus-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const name = btn.getAttribute('data-name');
+                const qty = parseInt(btn.getAttribute('data-qty'));
+                Cart.updateQuantity(name, qty - 1);
+                renderCartPage();
+            });
+        });
+
+        document.querySelectorAll('.qty-plus-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const name = btn.getAttribute('data-name');
+                const qty = parseInt(btn.getAttribute('data-qty'));
+                Cart.updateQuantity(name, qty + 1);
+                renderCartPage();
+            });
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', renderCartPage);
+</script>
+</body>
+</html>

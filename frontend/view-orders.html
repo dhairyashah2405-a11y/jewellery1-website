@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Supabase CDN & Configuration -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { background: #f5f5f5; padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; }
+        .header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .header-bar h1 { color: #9b4d5d; }
+        .back-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; background: #9b4d5d; color: white; text-decoration: none; border-radius: 5px; font-weight: 600; }
+        .back-btn:hover { background: #7d3f4a; }
+        .order-card { background: white; margin-bottom: 25px; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border: 1px solid #eee; }
+        .order-header { border-bottom: 2px solid #f5f5f5; padding-bottom: 10px; margin-bottom: 15px; display: flex; justify-content: space-between; }
+        .order-number { font-size: 16px; font-weight: bold; color: #9b4d5d; }
+        .order-date { color: #666; }
+        .customer-info { background: #fcfbfb; padding: 15px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #f9f6f6; line-height: 1.6; color: #555; }
+        .products-table { width: 100%; border-collapse: collapse; }
+        .products-table th, .products-table td { padding: 12px; text-align: left; border-bottom: 1px solid #f5f5f5; }
+        .products-table th { background: #faf8f8; color: #9b4d5d; font-size: 13px; letter-spacing: 0.5px; }
+        .product-image { width: 60px; height: 60px; object-fit: cover; border-radius: 4px; border: 1px solid #eee; }
+        .total { font-size: 18px; font-weight: bold; text-align: right; margin-top: 15px; padding-top: 15px; border-top: 2px solid #eee; }
+        .total-price-val { color: #9b4d5d; font-size: 22px; }
+        .loading-state, .empty-state { text-align: center; padding: 50px; background: white; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .empty-state h2 { color: #9b4d5d; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header-bar">
+            <h1>📦 My Orders</h1>
+            <a href="home.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Back to Home</a>
+        </div>
+        
+        <div id="ordersWrapper">
+            <div class="loading-state">
+                <h2>Loading your orders...</h2>
+                <p>Please wait a moment while we fetch your purchase history.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const wrapper = document.getElementById('ordersWrapper');
+            
+            if (!supabaseClient) {
+                wrapper.innerHTML = `
+                    <div class="empty-state">
+                        <h2>Supabase Client Not Connected</h2>
+                        <p>Please configure your Supabase URL and Key in <b>frontend/js/supabase-config.js</b> to retrieve orders.</p>
+                        <a href="home.html" class="back-btn" style="margin-top:20px;">Return Home</a>
+                    </div>`;
+                return;
+            }
+
+            // Retrieve Auth User
+            const { data: { user }, error: userError } = await supabaseClient.auth.getUser();
+            if (userError || !user) {
+                alert('Please login to view your orders.');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Query database orders table
+            const { data: orders, error: ordersError } = await supabaseClient
+                .from('orders')
+                .select('*')
+                .eq('user_id', user.id)
+                .order('created_at', { ascending: false });
+
+            if (ordersError) {
+                wrapper.innerHTML = `
+                    <div class="empty-state">
+                        <h2>Error Fetching Orders</h2>
+                        <p>\${ordersError.message}</p>
+                    </div>`;
+                return;
+            }
+
+            if (!orders || orders.length === 0) {
+                wrapper.innerHTML = `
+                    <div class="empty-state">
+                        <h2>No orders found!</h2>
+                        <p>You have not placed any orders yet. Start exploring our collections!</p>
+                        <a href="shop.html" class="back-btn" style="margin-top:20px; display:inline-block;">Go to Shop</a>
+                    </div>`;
+                return;
+            }
+
+            wrapper.innerHTML = '';
+            orders.forEach(order => {
+                const orderDate = new Date(order.created_at).toLocaleString('en-IN', {
+                    day: 'numeric',
+                    month: 'short',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+
+                const card = document.createElement('div');
+                card.className = 'order-card';
+
+                let rowsHtml = '';
+                order.items.forEach(item => {
+                    const price = Number(item.price);
+                    const qty = Number(item.quantity);
+                    const subtotal = price * qty;
+
+                    rowsHtml += `
+                        <tr>
+                            <td><img src="\${item.image}" class="product-image" onerror="this.src='images/1.jpg';"></td>
+                            <td>\${item.name}</td>
+                            <td>₹\${price.toLocaleString('en-IN')}</td>
+                            <td>\${qty}</td>
+                            <td>₹\${subtotal.toLocaleString('en-IN')}</td>
+                        </tr>
+                    `;
+                });
+
+                card.innerHTML = `
+                    <div class="order-header">
+                        <span class="order-number">Order ID: #\${order.id}</span>
+                        <span class="order-date">📅 \${orderDate}</span>
+                    </div>
+                    <div class="customer-info">
+                        <strong>👤 Deliver To:</strong> \${order.customer_name}<br>
+                        <strong>📧 Contact Email:</strong> \${order.customer_email}<br>
+                        <strong>📍 Shipping Address:</strong> \${order.address}<br>
+                        <strong>💳 Payment Option:</strong> \${order.payment_method}
+                    </div>
+                    <table class="products-table">
+                        <thead>
+                            <tr><th>Image</th><th>Product</th><th>Price</th><th>Qty</th><th>Subtotal</th></tr>
+                        </thead>
+                        <tbody>
+                            \${rowsHtml}
+                        </tbody>
+                    </table>
+                    <div class="total">
+                        Total Amount: <span class="total-price-val">₹\${Number(order.total_amount).toLocaleString('en-IN')}</span>
+                    </div>
+                `;
+                wrapper.appendChild(card);
+            });
+        });
+    </script>
+</body>
+</html>

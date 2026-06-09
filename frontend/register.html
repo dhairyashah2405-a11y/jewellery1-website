@@ -833,6 +833,78 @@ input[type="submit"]{
     </div>
 </footer>
 <script>
+    // Supabase Auth Integration
+    document.addEventListener("DOMContentLoaded", () => {
+        const form = document.querySelector('form');
+        if (form) {
+            form.addEventListener('submit', async (e) => {
+                if (typeof supabaseClient !== 'undefined' && supabaseClient) {
+                    e.preventDefault(); // Stop standard form submission to PHP
+                    
+                    const firstName = document.getElementById('first_name').value.trim();
+                    const lastName = document.getElementById('last_name').value.trim();
+                    const username = document.getElementById('username').value.trim();
+                    const password = document.getElementById('password').value;
+                    const confirmPassword = document.getElementById('confirm_password').value;
+                    
+                    if (password !== confirmPassword) {
+                        alert("Passwords do not match!");
+                        return;
+                    }
+                    
+                    const email = username.toLowerCase() + "@example.com";
+                    
+                    const submitBtn = form.querySelector('input[type="submit"]');
+                    const originalBtnValue = submitBtn.value;
+                    submitBtn.value = "Registering...";
+                    submitBtn.disabled = true;
+                    
+                    // Sign up user in Auth
+                    const { data: authData, error: authError } = await supabaseClient.auth.signUp({
+                        email: email,
+                        password: password,
+                        options: {
+                            data: {
+                                first_name: firstName,
+                                last_name: lastName,
+                                username: username
+                            }
+                        }
+                    });
+                    
+                    if (authError) {
+                        alert("Registration failed: " + authError.message);
+                        submitBtn.value = originalBtnValue;
+                        submitBtn.disabled = false;
+                        return;
+                    }
+                    
+                    if (authData.user) {
+                        // Write user details to profiles table
+                        const { error: profileError } = await supabaseClient
+                            .from('profiles')
+                            .insert([
+                                {
+                                    id: authData.user.id,
+                                    username: username,
+                                    first_name: firstName,
+                                    last_name: lastName,
+                                    email: email
+                                }
+                            ]);
+                            
+                        if (profileError) {
+                            console.warn("Failed to create profile row, but user auth was created:", profileError.message);
+                        }
+                    }
+                    
+                    alert("Registration successful! Now try logging in.");
+                    window.location.href = "login.html";
+                }
+            });
+        }
+    });
+
     // hamburger
     function toggleMenu() {
         document.getElementById("menu").classList.toggle("show");

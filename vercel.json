@@ -3,6 +3,14 @@
   "cleanUrls": true,
   "routes": [
     {
+      "src": "/frontend/js/supabase-config.js",
+      "dest": "/api/supabase-config-js.php"
+    },
+    {
+      "src": "/js/supabase-config.js",
+      "dest": "/api/supabase-config-js.php"
+    },
+    {
       "src": "/images/(.*)",
       "dest": "/frontend/images/$1"
     },
@@ -166,5 +174,10 @@
       "src": "/",
       "dest": "/frontend/home.html"
     }
-  ]
+  ],
+  "functions": {
+    "api/**/*.php": {
+      "runtime": "vercel-php@0.7.2"
+    }
+  }
 }

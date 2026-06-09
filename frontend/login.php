@@ -253,7 +253,8 @@ if (isset($_GET['registered']) && $_GET['registered'] == 1) {
             border: 1px solid #ccc;
             padding: 20px;
             border-radius: 10px;
-            width: 400px;
+            width: 90%;
+            max-width: 400px;
             margin: 0 auto;
             background-color: white;
             box-shadow: 0 4px 8px 0 black;

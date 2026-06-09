@@ -1,11 +1,11 @@
 // Config file for Supabase connection & global cart management
-const SUPABASE_URL = "https://your-project-id.supabase.co"; // REPLACE WITH YOUR SUPABASE URL
-const SUPABASE_ANON_KEY = "your-anon-key"; // REPLACE WITH YOUR SUPABASE ANON KEY
+const SUPABASE_URL = "https://cxueyxqfsceuszteltol.supabase.co"; 
+const SUPABASE_ANON_KEY = "sb_publishable_jUTioCpd4rLaQxPEBDY0ow_8qJdOSr3"; 
 
 let supabaseClient = null;
 
 try {
-    if (typeof supabase !== 'undefined' && SUPABASE_URL !== "https://your-project-id.supabase.co") {
+    if (typeof supabase !== 'undefined' && SUPABASE_URL) {
         supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     }
 } catch (err) {

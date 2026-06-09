@@ -852,7 +852,7 @@ input[type="submit"]{
                         return;
                     }
                     
-                    const email = username.toLowerCase() + "@example.com";
+                    const email = username.replace(/\s+/g, '').toLowerCase() + "@example.com";
                     
                     const submitBtn = form.querySelector('input[type="submit"]');
                     const originalBtnValue = submitBtn.value;

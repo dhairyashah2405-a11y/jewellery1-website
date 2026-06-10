@@ -2226,19 +2226,39 @@
             const cat = params.get('category') || '';
             const search = params.get('search') || '';
 
-            let query = supabaseClient.from('store_products').select('*');
-            if (cat) {
-                query = query.eq('collection', cat);
+            let products = [];
+            if (typeof supabaseClient !== 'undefined' && supabaseClient) {
+                try {
+                    let query = supabaseClient.from('store_products').select('*');
+                    if (cat) {
+                        query = query.eq('collection', cat);
+                    }
+                    const { data } = await query;
+                    if (data && data.length > 0) {
+                        products = data;
+                    } else {
+                        products = typeof DEFAULT_PRODUCTS !== 'undefined' ? DEFAULT_PRODUCTS : [];
+                    }
+                } catch (e) {
+                    console.warn("Supabase query failed, using fallback:", e);
+                    products = typeof DEFAULT_PRODUCTS !== 'undefined' ? DEFAULT_PRODUCTS : [];
+                }
+            } else {
+                products = typeof DEFAULT_PRODUCTS !== 'undefined' ? DEFAULT_PRODUCTS : [];
             }
 
-            let products = [];
-            if (supabaseClient) {
-                try {
-                    const { data } = await query;
-                    if (data) products = data;
-                } catch (e) {
-                    console.warn(e);
-                }
+            // Apply category filter locally if using fallback
+            if (cat && products === DEFAULT_PRODUCTS) {
+                products = products.filter(p => p.collection === cat);
+            }
+
+            // Apply search query locally
+            if (search) {
+                const queryTerm = search.trim().toLowerCase();
+                products = products.filter(p => 
+                    p.name.toLowerCase().includes(queryTerm) || 
+                    (p.collection && p.collection.toLowerCase().includes(queryTerm))
+                );
             }
 
             const grid = document.getElementById('categoryProductGrid');

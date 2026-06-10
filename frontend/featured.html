@@ -1640,36 +1640,7 @@
             ]
         });
 
-        // Featured Product Slider
-        var $featuredSlider = $('.product-slider');
-        $featuredSlider.slick({
-            infinite: true,
-            slidesToShow: 3,    
-            slidesToScroll: 1,
-            autoplay: true,
-            autoplaySpeed: 3500,
-            speed: 600,
-            cssEase: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-            prevArrow: $('#featuredPrev'),
-            nextArrow: $('#featuredNext'),
-            dots: true,
-            appendDots: $featuredSlider.parent().parent().find('.slider-counter'),
-            customPaging: function() { return ''; },
-            responsive: [
-                { breakpoint: 1100, settings: { slidesToShow: 2 } },
-                { breakpoint: 700, settings: { slidesToShow: 1 } }
-            ]
-        });
-
-        // Update counter
-        function updateCounter() {
-            var curr = $featuredSlider.slick('slickCurrentSlide') + 1;
-            var total = $featuredSlider.slick('getSlick').slideCount;
-            $('#currentSlide').text(curr);
-            $('#totalSlides').text(total);
-        }
-        updateCounter();
-        $featuredSlider.on('afterChange', updateCounter);
+        // Featured Product Slider is initialized dynamically after products load in loadFeaturedProducts()
 
         // Testimonial Slider
         $('.testimonial-slider').slick({
@@ -2096,30 +2067,128 @@
 </script>
 
     <script>
+        function initializeFeaturedCardsLogic() {
+            const getWishlist = () => JSON.parse(localStorage.getItem("wishlist") || "[]");
+            const saveWishlist = (list) => localStorage.setItem("wishlist", JSON.stringify(list));
+
+            const updateWishlistBadges = () => {
+                const list = getWishlist();
+                const badge = document.getElementById("wishlistBadge");
+                if (badge) {
+                    badge.textContent = list.length;
+                }
+            };
+
+            const toggleWishlist = (name, price, image, btn) => {
+                let list = getWishlist();
+                const index = list.findIndex(item => item.name === name);
+                const icon = btn.querySelector("i");
+
+                if (index > -1) {
+                    list.splice(index, 1);
+                    btn.classList.remove("active");
+                    if (icon) {
+                        icon.className = "fa-regular fa-heart";
+                    }
+                } else {
+                    list.push({ name, price, image });
+                    btn.classList.add("active");
+                    if (icon) {
+                        icon.className = "fa-solid fa-heart";
+                    }
+                }
+
+                saveWishlist(list);
+                updateWishlistBadges();
+            };
+
+            const productCards = document.querySelectorAll(".product-card");
+            const list = getWishlist();
+
+            productCards.forEach(card => {
+                const imageContainer = card.querySelector(".product-image-container");
+                if (!imageContainer) return;
+
+                const img = imageContainer.querySelector("img");
+                if (!img) return;
+
+                const titleEl = card.querySelector(".product-title");
+                const rawTitle = titleEl ? titleEl.textContent.trim() : "";
+                const name = rawTitle ? rawTitle : (img.alt ? img.alt : "");
+
+                const priceEl = card.querySelector(".current-price");
+                const price = priceEl ? priceEl.textContent.trim().replace("₹", "").replace(",", "") : "";
+                const image = img.getAttribute("src") || "";
+
+                const isInWish = list.some(item => item.name === name);
+
+                let btn = imageContainer.querySelector(".wishlist-btn");
+                const isNew = !btn;
+                if (isNew) {
+                    btn = document.createElement("button");
+                    btn.className = "wishlist-btn";
+                    btn.setAttribute("type", "button");
+                }
+
+                if (isInWish) {
+                    btn.classList.add("active");
+                    const icon = btn.querySelector("i");
+                    if (icon) icon.className = "fa-solid fa-heart";
+                } else {
+                    btn.classList.remove("active");
+                    const icon = btn.querySelector("i");
+                    if (icon) icon.className = "fa-regular fa-heart";
+                }
+
+                if (isNew) {
+                    if (!btn.querySelector("i")) {
+                        btn.innerHTML = `<i class="${isInWish ? "fa-solid fa-heart" : "fa-regular fa-heart"}"></i>`;
+                    }
+                    imageContainer.appendChild(btn);
+                }
+                
+                btn.onclick = (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    toggleWishlist(name, price, image, btn);
+                };
+            });
+        }
+
         async function loadFeaturedProducts() {
             let products = [];
             if (supabaseClient) {
                 try {
                     const { data } = await supabaseClient.from('store_products').select('*').eq('featured', true);
                     if (data) products = data;
-                } catch(e) {}
+                } catch(e) {
+                    console.warn(e);
+                }
             }
-            const grid = document.getElementById('featuredProductGrid');
+            const grid = document.querySelector('.product-slider');
             if (!grid) return;
             grid.innerHTML = '';
             
+            if (products.length === 0) {
+                grid.innerHTML = '<div style="width:100%;text-align:center;padding:40px;color:#888;">No featured products found.</div>';
+                return;
+            }
+
             products.forEach(p => {
                 const formattedPrice = Number(p.price).toLocaleString('en-IN');
                 const detailUrl = 'product-detail.html?name=' + encodeURIComponent(p.name) + '&price=' + encodeURIComponent(p.price) + '&image=' + encodeURIComponent(p.image);
                 
                 const card = document.createElement('div');
                 card.className = 'product-card';
+                card.dataset.collection = p.collection || '';
+                card.dataset.price = p.price || '0';
                 card.innerHTML = `
                     <div class="product-image-container">
                         <a href="${detailUrl}"><img src="${p.image}" alt="${p.name}"></a>
+                        <button class="wishlist-btn" type="button" aria-label="Add to wishlist"><i class="fa-regular fa-heart"></i></button>
                     </div>
                     <div class="product-details">
-                        <h3 class="product-title">${p.name}</h3>
+                        <h3 class="product-title" style="cursor: pointer;" onclick="window.location.href='${detailUrl}'">${p.name}</h3>
                         <div class="product-price">
                             <span class="currency">₹</span>
                             <span class="current-price">${formattedPrice}</span>
@@ -2129,6 +2198,40 @@
                 `;
                 grid.appendChild(card);
             });
+
+            // Initialize slick slider dynamically now that slides are in the DOM!
+            var $featuredSlider = $('.product-slider');
+            $featuredSlider.slick({
+                infinite: true,
+                slidesToShow: 3,    
+                slidesToScroll: 1,
+                autoplay: true,
+                autoplaySpeed: 3500,
+                speed: 600,
+                cssEase: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+                prevArrow: $('#featuredPrev'),
+                nextArrow: $('#featuredNext'),
+                dots: true,
+                appendDots: $featuredSlider.parent().parent().find('.slider-counter'),
+                customPaging: function() { return ''; },
+                responsive: [
+                    { breakpoint: 1100, settings: { slidesToShow: 2 } },
+                    { breakpoint: 700, settings: { slidesToShow: 1 } }
+                ]
+            });
+
+            // Update counter
+            function updateCounter() {
+                var curr = $featuredSlider.slick('slickCurrentSlide') + 1;
+                var total = $featuredSlider.slick('getSlick').slideCount;
+                $('#currentSlide').text(curr);
+                $('#totalSlides').text(total);
+            }
+            updateCounter();
+            $featuredSlider.on('afterChange', updateCounter);
+
+            // Initialize wishlist heart click events on dynamic cards
+            initializeFeaturedCardsLogic();
         }
         document.addEventListener('DOMContentLoaded', loadFeaturedProducts);
     </script>

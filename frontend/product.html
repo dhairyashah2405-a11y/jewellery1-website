@@ -2037,6 +2037,190 @@
 </script>
 
     <script>
+        function initializeProductCardsLogic() {
+            const getWishlist = () => JSON.parse(localStorage.getItem("wishlist") || "[]");
+            const saveWishlist = (list) => localStorage.setItem("wishlist", JSON.stringify(list));
+
+            const updateWishlistBadges = () => {
+                const list = getWishlist();
+                const badge = document.getElementById("wishlistBadge");
+                if (badge) {
+                    badge.textContent = list.length;
+                }
+            };
+
+            const toggleWishlist = (name, price, image, btn) => {
+                let list = getWishlist();
+                const index = list.findIndex(item => item.name === name);
+                const icon = btn.querySelector("i");
+
+                if (index > -1) {
+                    list.splice(index, 1);
+                    btn.classList.remove("active");
+                    if (icon) {
+                        icon.className = "fa-regular fa-heart";
+                    }
+                } else {
+                    list.push({ name, price, image });
+                    btn.classList.add("active");
+                    if (icon) {
+                        icon.className = "fa-solid fa-heart";
+                    }
+                }
+
+                saveWishlist(list);
+                updateWishlistBadges();
+            };
+
+            const productCards = document.querySelectorAll(".product-card");
+            const list = getWishlist();
+
+            productCards.forEach(card => {
+                const imageContainer = card.querySelector(".product-image-container");
+                if (!imageContainer) return;
+
+                const img = imageContainer.querySelector("img");
+                if (!img) return;
+
+                const titleEl = card.querySelector(".product-title");
+                const rawTitle = titleEl ? titleEl.textContent.trim() : "";
+                const name = rawTitle ? rawTitle : (img.alt ? img.alt : "");
+
+                const price = card.getAttribute("data-price") || "";
+                const image = img.getAttribute("src") || "";
+
+                const isInWish = list.some(item => item.name === name);
+
+                let btn = imageContainer.querySelector(".wishlist-btn");
+                const isNew = !btn;
+                if (isNew) {
+                    btn = document.createElement("button");
+                    btn.className = "wishlist-btn";
+                    btn.setAttribute("type", "button");
+                }
+
+                if (isInWish) {
+                    btn.classList.add("active");
+                    const icon = btn.querySelector("i");
+                    if (icon) icon.className = "fa-solid fa-heart";
+                } else {
+                    btn.classList.remove("active");
+                    const icon = btn.querySelector("i");
+                    if (icon) icon.className = "fa-regular fa-heart";
+                }
+
+                if (isNew) {
+                    if (!btn.querySelector("i")) {
+                        btn.innerHTML = `<i class="${isInWish ? "fa-solid fa-heart" : "fa-regular fa-heart"}"></i>`;
+                    }
+                    imageContainer.appendChild(btn);
+                }
+                
+                btn.onclick = (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    toggleWishlist(name, price, image, btn);
+                };
+            });
+
+            // Rewrite detail page links dynamically with parameters and inject size dropdown
+            document.querySelectorAll('.product-card').forEach(card => {
+                const titleEl = card.querySelector('.product-title');
+                const imgEl = card.querySelector('.product-image-container img');
+                const priceEl = card.querySelector('.current-price');
+                const form = card.querySelector('form');
+                if (!titleEl || !imgEl) return;
+
+                const name = titleEl ? titleEl.textContent.trim() : (imgEl.alt ? imgEl.alt.trim() : '');
+                const image = imgEl.getAttribute('src');
+                const price = priceEl ? priceEl.textContent.trim().replace(/[^\d.]/g, '') : '';
+
+                if (form) {
+                    const inputName = form.querySelector('input[name="name"]');
+                    const inputPrice = form.querySelector('input[name="price"]');
+                    const inputImage = form.querySelector('input[name="image"]');
+                    if (inputName) inputName.value = name;
+                    if (inputPrice) inputPrice.value = price;
+                    if (inputImage) inputImage.value = image;
+                }
+                const collection = card.getAttribute('data-collection') || 'rings';
+
+                let sizes = ['6', '7', '8', '9', '10'];
+                if (collection === 'bracelets') {
+                    sizes = ['2.4', '2.6', '2.8'];
+                } else if (collection === 'earrings') {
+                    sizes = ['Standard'];
+                } else if (collection === 'necklace') {
+                    sizes = ['18 inches', '20 inches', '22 inches'];
+                }
+
+                let selectEl = null;
+                if (form) {
+                    let existingSelect = form.querySelector('.card-size-select');
+                    if (!existingSelect) {
+                        selectEl = document.createElement('select');
+                        selectEl.name = 'size';
+                        selectEl.className = 'card-size-select';
+                        selectEl.style.cssText = `
+                            width: 100%;
+                            padding: 8px 12px;
+                            margin-bottom: 12px;
+                            border: 1px solid rgba(255,255,255,0.4);
+                            border-radius: 50px;
+                            background: white;
+                            color: #954D59;
+                            font-size: 13px;
+                            font-weight: 600;
+                            text-align: center;
+                            outline: none;
+                            cursor: pointer;
+                            transition: all 0.3s;
+                        `;
+                        sizes.forEach(sz => {
+                            const opt = document.createElement('option');
+                            opt.value = sz;
+                            opt.textContent = `Size: ${sz}`;
+                            opt.style.color = '#333';
+                            selectEl.appendChild(opt);
+                        });
+                        
+                        const btn = form.querySelector('.add-to-cart-btn');
+                        if (btn) {
+                            form.insertBefore(selectEl, btn);
+                        }
+
+                        selectEl.addEventListener('change', () => {
+                            updateLinks(selectEl.value);
+                        });
+                    } else {
+                        selectEl = existingSelect;
+                    }
+                }
+
+                function updateLinks(selectedSize) {
+                    const params = new URLSearchParams();
+                    params.set('name', name);
+                    params.set('price', price);
+                    params.set('image', image);
+                    if (selectedSize && selectedSize !== 'Standard') {
+                        params.set('size', selectedSize);
+                    }
+
+                    const detailUrl = `product-detail.html?${params.toString()}`;
+
+                    const imgLink = card.querySelector('a[href*="product-detail"], a[href*="product detail"]');
+                    if (imgLink) {
+                        imgLink.href = detailUrl;
+                    }
+
+                    titleEl.style.cursor = 'pointer';
+                    titleEl.onclick = () => { window.location.href = detailUrl; };
+                }
+
+                updateLinks(selectEl ? selectEl.value : '');
+            });
+        }
+
         async function loadCategoryProducts() {
             const params = new URLSearchParams(window.location.search);
             const cat = params.get('category') || '';
@@ -2073,6 +2257,13 @@
                 
                 const card = document.createElement('div');
                 card.className = 'product-card';
+                card.dataset.collection = p.collection || 'rings';
+                card.dataset.availability = p.availability || 'in-stock';
+                card.dataset.price = p.price || '0';
+                card.dataset.featured = p.featured ? 'true' : 'false';
+                card.dataset.sales = p.sales || '0';
+                card.dataset.date = p.created_at || p.date || '';
+
                 card.innerHTML = `
                     <div class="product-image-container">
                         <a href="${detailUrl}"><img src="${p.image}" alt="${p.name}"></a>
@@ -2084,11 +2275,37 @@
                             <span class="currency">₹</span>
                             <span class="current-price">${formattedPrice}</span>
                         </div>
-                        <button type="button" class="add-to-cart-btn" ${isOutOfStock ? 'disabled style="background:#ccc;cursor:not-allowed;"' : ''} onclick="Cart.add({ name: '\'' + p.name.replace(/\'/g, "\\'") + '\', price: ' + p.price + ', image: \'' + p.image + '\' })">${isOutOfStock ? 'Out of Stock' : 'Add to Cart'}</button>
+                        <form onsubmit="event.preventDefault();" style="margin: 0; width: 100%;">
+                            <input type="hidden" name="name" value="${p.name.replace(/"/g, '&quot;')}">
+                            <input type="hidden" name="price" value="${p.price}">
+                            <input type="hidden" name="image" value="${p.image}">
+                            <button type="submit" class="add-to-cart-btn" ${isOutOfStock ? 'disabled style="background:#ccc;cursor:not-allowed;"' : ''}>${isOutOfStock ? 'Out of Stock' : 'Add to Cart'}</button>
+                        </form>
                     </div>
                 `;
                 grid.appendChild(card);
             });
+
+            // Initialize wishlist badges, detail link parameter bindings, and sizes selector dropdowns on newly added products
+            initializeProductCardsLogic();
+
+            // Connect submission event listener on dynamically added Add to Cart forms
+            document.querySelectorAll('.product-card form').forEach(form => {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const name = form.querySelector('input[name="name"]').value;
+                    const price = form.querySelector('input[name="price"]').value;
+                    const image = form.querySelector('input[name="image"]').value;
+                    const sizeEl = form.querySelector('select[name="size"]');
+                    const size = sizeEl ? sizeEl.value : null;
+
+                    Cart.add({ name, price, image, size });
+                });
+            });
+
+            // Re-execute calculations and dynamic filters/sort execution
+            calculateDynamicFilterCounts();
+            applySortingFiltering();
         }
         document.addEventListener('DOMContentLoaded', loadCategoryProducts);
     </script>

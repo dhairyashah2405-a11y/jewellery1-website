@@ -1901,6 +1901,24 @@
                 toggleWishlist(name, price, image, btn);
             };
         });
+
+        // Hook up Add to Cart form submission handlers
+        document.querySelectorAll('.product-card form').forEach(form => {
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const nameInput = form.querySelector('input[name="name"]');
+                const priceInput = form.querySelector('input[name="price"]');
+                const imageInput = form.querySelector('input[name="image"]');
+                
+                if (nameInput && priceInput && imageInput) {
+                    Cart.add({
+                        name: nameInput.value,
+                        price: priceInput.value,
+                        image: imageInput.value
+                    });
+                }
+            });
+        });
     });
 </script>
 </body>

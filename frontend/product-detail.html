@@ -1655,14 +1655,208 @@
             <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard">
             <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal">
         </div>
-
-        </div>
-    </div>
 </footer>
 
     <script>
+        let initialProductName = ""; // global variable to hold base product name for color swatches
+
+        function loadProductDetails() {
+            const params = new URLSearchParams(window.location.search);
+            const name = params.get('name') || 'Engagement Ring (Gold)';
+            const price = params.get('price') || '1499';
+            const image = params.get('image') || 'images/10.jpg';
+            const size = params.get('size') || '';
+
+            initialProductName = name;
+
+            // Clean price
+            const priceClean = price.replace(/[₹,\s]/g, '');
+            const priceNum = parseFloat(priceClean) || 0;
+            const priceFormatted = priceNum.toLocaleString('en-IN', {
+                maximumFractionDigits: 2,
+                minimumFractionDigits: 2
+            });
+
+            // Determine category
+            let category = 'Rings';
+            let sizes = ['6', '7', '8', '9', '10'];
+            const lowerName = name.toLowerCase();
+            const lowerImage = image.toLowerCase();
+
+            if (lowerName.includes('bracelet') || lowerName.includes('bangle') || lowerImage.includes('bracelet') || lowerImage.includes('bangle')) {
+                category = 'Bracelet';
+                sizes = ['2.4', '2.6', '2.8'];
+            } else if (lowerName.includes('earring') || lowerImage.includes('earring')) {
+                category = 'Earrings';
+                sizes = ['Standard'];
+            } else if (lowerName.includes('necklace') || lowerImage.includes('necklace')) {
+                category = 'Necklace';
+                sizes = ['18 inches', '20 inches', '22 inches'];
+            }
+
+            // Populate Crumbs
+            const catCrumb = document.getElementById('product-category-crumb');
+            if (catCrumb) {
+                catCrumb.textContent = category;
+            }
+            const titleCrumb = document.getElementById('product-title-crumb');
+            if (titleCrumb) {
+                titleCrumb.textContent = name;
+            }
+
+            // Populate Title & Price
+            const titleEl = document.getElementById('product-title');
+            if (titleEl) titleEl.textContent = name;
+            
+            const priceEl = document.getElementById('product-price');
+            if (priceEl) priceEl.textContent = '₹' + priceFormatted;
+
+            // Inputs
+            const nameInput = document.getElementById('product-name');
+            if (nameInput) nameInput.value = name;
+
+            const priceInput = document.getElementById('product-price-input');
+            if (priceInput) priceInput.value = priceClean;
+
+            const imgInput = document.getElementById('product-image-input');
+            if (imgInput) imgInput.value = image;
+
+            // Main image
+            const mainImg = document.getElementById('main-product-img');
+            if (mainImg) mainImg.src = image;
+
+            // Thumbnails
+            const thumbnailList = document.getElementById('thumbnail-list');
+            if (thumbnailList) {
+                thumbnailList.innerHTML = `
+                    <img src="${image}" alt="Thumbnail 1" class="active">
+                    <img src="${image}" alt="Thumbnail 2">
+                    <img src="${image}" alt="Thumbnail 3">
+                `;
+                // Re-bind thumbnail click events
+                const thumbnails = thumbnailList.querySelectorAll('img');
+                thumbnails.forEach(thumb => {
+                    thumb.addEventListener('click', () => {
+                        thumbnails.forEach(t => t.classList.remove('active'));
+                        thumb.classList.add('active');
+                        if (mainImg) mainImg.src = thumb.src;
+                    });
+                });
+            }
+
+            // Sizes select dropdown
+            const sizeSelect = document.getElementById('selected-size');
+            if (sizeSelect) {
+                sizeSelect.innerHTML = '';
+                sizes.forEach(sz => {
+                    const opt = document.createElement('option');
+                    opt.value = sz;
+                    opt.textContent = sz;
+                    if (sz === size) opt.selected = true;
+                    sizeSelect.appendChild(opt);
+                });
+            }
+
+            // Color swatches
+            const swatchContainer = document.getElementById('color-swatches');
+            if (swatchContainer) {
+                let goldImg = image;
+                let silverImg = image;
+                if (image === 'images/10.jpg') {
+                    silverImg = 'images/15.jpg';
+                }
+                swatchContainer.innerHTML = `
+                    <div class="swatch gold active" data-color="GOLD" data-image="${goldImg}"></div>
+                    <div class="swatch silver" data-color="SILVER" data-image="${silverImg}"></div>
+                `;
+
+                // Re-bind swatch click events
+                const swatches = swatchContainer.querySelectorAll('.swatch');
+                const colorTitle = document.querySelector('.product-options .option-title');
+                
+                swatches.forEach(swatch => {
+                    swatch.addEventListener('click', () => {
+                        swatches.forEach(s => s.classList.remove('active'));
+                        swatch.classList.add('active');
+                        
+                        const color = swatch.dataset.color;
+                        if (colorTitle) colorTitle.textContent = `COLOR : ${color}`;
+                        
+                        const selectedImg = swatch.dataset.image;
+                        if (mainImg) mainImg.src = selectedImg;
+                        if (imgInput) imgInput.value = selectedImg;
+                        
+                        const colorInput = document.getElementById('selected-color');
+                        if (colorInput) colorInput.value = color;
+
+                        // Update thumbnails source too!
+                        if (thumbnailList) {
+                            const thumbs = thumbnailList.querySelectorAll('img');
+                            thumbs.forEach(thumb => {
+                                thumb.src = selectedImg;
+                            });
+                        }
+
+                        // Update product name with color
+                        const cleanName = name.replace(/\s*\((gold|silver)\)/gi, "");
+                        const nameWithColor = `${cleanName} (${color})`;
+                        if (titleEl) titleEl.textContent = nameWithColor;
+                        if (nameInput) nameInput.value = nameWithColor;
+                    });
+                });
+            }
+
+            // Connect Add to Cart and Buy Now form events
+            const form = document.getElementById('detailCartForm');
+            if (form) {
+                const addBtn = form.querySelector('.add-to-cart-btn');
+                const buyBtn = form.querySelector('.buy-now-btn');
+
+                const getCartItem = () => {
+                    const nameVal = document.getElementById('product-name').value;
+                    const priceVal = document.getElementById('product-price-input').value;
+                    const imageVal = document.getElementById('product-image-input').value;
+                    const colorVal = document.getElementById('selected-color').value;
+                    const sizeEl = document.getElementById('selected-size');
+                    const sizeVal = sizeEl ? sizeEl.value : '';
+                    const qtyInput = form.querySelector('.quantity-selector input');
+                    const quantityVal = qtyInput ? parseInt(qtyInput.value) : 1;
+
+                    return { name: nameVal, price: priceVal, image: imageVal, color: colorVal, size: sizeVal, quantity: quantityVal };
+                };
+
+                if (addBtn) {
+                    addBtn.type = 'button'; // prevent default form submission page reload
+                    addBtn.addEventListener('click', () => {
+                        const termsCheckbox = document.getElementById('terms');
+                        if (termsCheckbox && !termsCheckbox.checked) {
+                            alert('Please agree with the terms and conditions');
+                            return;
+                        }
+                        const item = getCartItem();
+                        Cart.add(item);
+                    });
+                }
+
+                if (buyBtn) {
+                    buyBtn.type = 'button';
+                    buyBtn.addEventListener('click', () => {
+                        const termsCheckbox = document.getElementById('terms');
+                        if (termsCheckbox && !termsCheckbox.checked) {
+                            alert('Please agree with the terms and conditions');
+                            return;
+                        }
+                        const item = getCartItem();
+                        Cart.add(item);
+                        window.location.href = 'cart.html';
+                    });
+                }
+            }
+        }
+
         // Dynamically inject size selectors and rewrite detail links for related products
         document.addEventListener("DOMContentLoaded", () => {
+            loadProductDetails();
             document.querySelectorAll('.related-slider .product-card').forEach(card => {
                 const titleEl = card.querySelector('.product-title a');
                 const imgEl = card.querySelector('.product-image-container img');
@@ -1820,7 +2014,7 @@
                 document.getElementById('selected-color').value = color;
 
                 // Update product name based on selected color dynamically
-                const baseName = name;
+                const baseName = initialProductName;
                 const cleanName = baseName.replace(/\s*\((gold|silver)\)/gi, "");
                 const productName = `${cleanName} (${color})`;
                 document.getElementById('product-title').textContent = productName;
@@ -2013,7 +2207,7 @@
     // Wire up the main product wishlist button
     const mainWishlistBtn = document.querySelector('.purchase-actions .wishlist-btn');
     if (mainWishlistBtn) {
-        mainWishlistBtn.setAttribute('data-product', name);
+        mainWishlistBtn.setAttribute('data-product', initialProductName);
         mainWishlistBtn.setAttribute('onclick', 'toggleWishlist(this)');
         mainWishlistBtn.addEventListener('click', function() { toggleWishlist(this); });
     }
@@ -2032,7 +2226,7 @@
         });
 
         // Main product
-        if (mainWishlistBtn && wishlist[name]) {
+        if (mainWishlistBtn && wishlist[initialProductName]) {
             mainWishlistBtn.classList.add('wishlisted');
             const icon = mainWishlistBtn.querySelector('i');
             if (icon) icon.className = 'fa-solid fa-heart';
@@ -2080,30 +2274,24 @@
         }
     }
     loadAutocompleteSuggestions();
-            while ($p_js = mysqli_fetch_assoc($res_js)) {
-                $js_items[] = '{ name: ' . json_encode($p_js['name']) . ', price: ' . json_encode('₹' . number_format($p_js['price'])) . ', image: ' . json_encode($p_js['image']) . ', category: ' . json_encode($p_js['collection']) . ' }';
-            }
-            echo implode(",\n            ", $js_items);
-            ?>
-        ];
 
-        const openSearchOverlay = () => {
-            searchOverlay.classList.add("active");
-            searchBackdrop.classList.add("active");
-            setTimeout(() => searchInput.focus(), 100);
-            document.body.style.overflow = "hidden";
-        };
+    const openSearchOverlay = () => {
+        searchOverlay.classList.add("active");
+        searchBackdrop.classList.add("active");
+        setTimeout(() => searchInput.focus(), 100);
+        document.body.style.overflow = "hidden";
+    };
 
-        const closeSearchOverlay = () => {
-            searchOverlay.classList.remove("active");
-            searchBackdrop.classList.remove("active");
-            searchResultsDropdown.classList.remove("active");
-            document.body.style.overflow = "";
-        };
+    const closeSearchOverlay = () => {
+        searchOverlay.classList.remove("active");
+        searchBackdrop.classList.remove("active");
+        searchResultsDropdown.classList.remove("active");
+        document.body.style.overflow = "";
+    };
 
-        if (searchIconBtn) searchIconBtn.addEventListener("click", openSearchOverlay);
-        if (closeSearch) closeSearch.addEventListener("click", closeSearchOverlay);
-        if (searchBackdrop) searchBackdrop.addEventListener("click", closeSearchOverlay);
+    if (searchIconBtn) searchIconBtn.addEventListener("click", openSearchOverlay);
+    if (closeSearch) closeSearch.addEventListener("click", closeSearchOverlay);
+    if (searchBackdrop) searchBackdrop.addEventListener("click", closeSearchOverlay);
 
         document.addEventListener("keydown", (e) => {
             if (e.key === "Escape" && searchOverlay.classList.contains("active")) {

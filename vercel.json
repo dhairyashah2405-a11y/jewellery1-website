@@ -1,7 +1,112 @@
 {
   "version": 2,
+  "buildCommand": null,
   "cleanUrls": true,
   "routes": [
+    {
+      "src": "/backend/p1.php",
+      "dest": "/api/p1.php"
+    },
+    {
+      "src": "/frontend/backend/p1.php",
+      "dest": "/api/p1.php"
+    },
+    {
+      "src": "/backend/p3.php",
+      "dest": "/api/p3.php"
+    },
+    {
+      "src": "/frontend/backend/p3.php",
+      "dest": "/api/p3.php"
+    },
+    {
+      "src": "/backend/p4.php",
+      "dest": "/api/p4.php"
+    },
+    {
+      "src": "/frontend/backend/p4.php",
+      "dest": "/api/p4.php"
+    },
+    {
+      "src": "/backend/p5.php",
+      "dest": "/api/p5.php"
+    },
+    {
+      "src": "/frontend/backend/p5.php",
+      "dest": "/api/p5.php"
+    },
+    {
+      "src": "/backend/logout.php",
+      "dest": "/api/logout.php"
+    },
+    {
+      "src": "/frontend/backend/logout.php",
+      "dest": "/api/logout.php"
+    },
+    {
+      "src": "/backend/admin.php",
+      "dest": "/api/admin.php"
+    },
+    {
+      "src": "/frontend/backend/admin.php",
+      "dest": "/api/admin.php"
+    },
+    {
+      "src": "/admin.php",
+      "dest": "/api/admin.php"
+    },
+    {
+      "src": "/admin",
+      "dest": "/api/admin.php"
+    },
+    {
+      "src": "/sync_cart.php",
+      "dest": "/api/sync_cart.php"
+    },
+    {
+      "src": "/frontend/sync_cart.php",
+      "dest": "/api/sync_cart.php"
+    },
+    {
+      "src": "/update_cart_quantity.php",
+      "dest": "/api/update_cart_quantity.php"
+    },
+    {
+      "src": "/frontend/update_cart_quantity.php",
+      "dest": "/api/update_cart_quantity.php"
+    },
+    {
+      "src": "/remove_cart.php",
+      "dest": "/api/remove_cart.php"
+    },
+    {
+      "src": "/frontend/remove_cart.php",
+      "dest": "/api/remove_cart.php"
+    },
+    {
+      "src": "/insert_cart.php",
+      "dest": "/api/insert_cart.php"
+    },
+    {
+      "src": "/frontend/insert_cart.php",
+      "dest": "/api/insert_cart.php"
+    },
+    {
+      "src": "/display_order.php",
+      "dest": "/api/display_order.php"
+    },
+    {
+      "src": "/frontend/display_order.php",
+      "dest": "/api/display_order.php"
+    },
+    {
+      "src": "/view_orders.php",
+      "dest": "/api/view_orders.php"
+    },
+    {
+      "src": "/frontend/view_orders.php",
+      "dest": "/api/view_orders.php"
+    },
     {
       "src": "/frontend/js/supabase-config.js",
       "dest": "/api/supabase-config-js.php"

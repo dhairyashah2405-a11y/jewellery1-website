@@ -242,11 +242,8 @@
     }
   ],
   "functions": {
-    "api/**/*.php": {
-      "runtime": "vercel-php@0.7.2"
-    },
-    "backend/**/*.php": {
-      "runtime": "vercel-php@0.7.2"
+    "api/*.php": {
+      "runtime": "vercel-php@0.7.0"
     }
   }
 }
